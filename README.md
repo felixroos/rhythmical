@@ -85,7 +85,7 @@ const afrobell = Rhythm.ungroup(afrobell4);
 We can now apply another grouping:
 
 ```js
-const afrobell3 = Rhythm.group(afrobell, 4);
+const afrobell3 = Rhythm.group(afrobell, 3);
 ```
 
 ```js
