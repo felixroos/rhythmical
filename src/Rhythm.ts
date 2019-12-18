@@ -118,8 +118,16 @@ export class Rhythm {
     };
   }
 
-  static render<T>(rhythm: NestedRhythm<T>, length = 1, useValueAsLength = false): TimedEvent<T>[] {
-    return Rhythm.flat(rhythm)
+  static poly<T>(rhythms: (T | NestedRhythm<T>)[], length = 1): TimedEvent<T>[] {
+    const toArray = (r: T | NestedRhythm<T>) => !Array.isArray(r) ? [r] : r;
+    return rhythms.reduce(
+      (events: TimedEvent<T>[], rhythm): TimedEvent<T>[] => events.concat(
+        Rhythm.render(toArray(rhythm), length, true)
+      ), []);
+  }
+
+  static render<T>(rhythm: NestedRhythm<T>, length = 1, poly = false): TimedEvent<T>[] {
+    return Rhythm.flat(rhythm, [], poly)
       .map(Rhythm.calculate(length))
       .filter(event => !!event.duration)
   }
@@ -421,17 +429,40 @@ export class Rhythm {
 
   /** Flattens the given possibly nested tree array to an array containing all values in sequential order. 
    * You can then turn RhythmEvent[] back to the original nested array with Measure.expand. */
-  static flat<T>(rhythm: NestedRhythm<T>, path: EventPath = []): Array<FlatEvent<T>> {
+  static flat<T>(rhythm: NestedRhythm<T>, path: EventPath = [], poly = false): Array<FlatEvent<T>> {
+    // get total duration of rhythm
+    let duration;
+    if (!poly) {
+      duration = rhythm.reduce(
+        (sum, item) => sum + (!Array.isArray(item) && typeof item === 'object' ? item['duration'] : 1)
+        , 0);
+    } else {
+      duration = rhythm.length/* rhythm.reduce(
+        (max, item) => !Array.isArray(item) && typeof item === 'object' ?
+          Math.max((item['time'] || 0) + (item['duration'] || 1), max) :
+          Math.max(1, max), 0
+      ) */
+    }
+    let time = 0;
+    // TBD: if poly use max (time+duration as default duration)
+
     return rhythm.reduce(
       (flat: Array<FlatEvent<T>>, item: NestedRhythm<T> | T, index: number): Array<FlatEvent<T>> => {
+        const i = time + (item['time'] || 0);
+        /* time += typeof item === 'object' ? item['time'] || 1 : 1; */
+        if (!poly) {
+          time += typeof item === 'object' ? + (item['duration'] || 1) : 1;
+        }
         if (!Array.isArray(item)) {
           return flat.concat([{
             value: item,
-            path: path.concat([[index, rhythm.length]]),
+            path: path.concat([[i, duration]]),
+            /* path: path.concat([[index, rhythm.length]]), */
           }])
         }
         return flat.concat(
-          Rhythm.flat(item, path.concat([[index, rhythm.length]]))
+          Rhythm.flat(item, path.concat([[i, duration]]), poly)
+          /* Rhythm.flat(item, path.concat([[index, rhythm.length]])) */
         )
       }, []);
   }

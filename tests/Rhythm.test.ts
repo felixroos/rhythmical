@@ -48,6 +48,17 @@ test('render', () => {
   );
 })
 
+test('poly', () => {
+  expect(Rhythm.poly([1, 1, [0, 1], 1], 4)).toEqual(
+    [
+      { value: 1, path: [[0, 1]], time: 0, duration: 4 },
+      { value: 1, path: [[0, 1]], time: 0, duration: 4 },
+      { value: 1, path: [[1, 2]], time: 2, duration: 2 },
+      { value: 1, path: [[0, 1]], time: 0, duration: 4 },
+    ]
+  );
+})
+
 
 test('Rhythm.simplePath', () => {
   expect(Rhythm.simplePath([1, 0])).toEqual('1');
@@ -569,7 +580,7 @@ describe('new syntax', () => {
         1, // three
         [2, 0, 1] // four with "swing" off
       ];
-      
+
       expect(Rhythm.insert([3, 4], [[1, 2, 0, 0]], 2)).toEqual([[1, 2, 3, 4]]); // from left
       expect(Rhythm.insert([3, 4], [[1, 2, 0, 0]], -2)).toEqual([[1, 2, 3, 4]]); // from right
 

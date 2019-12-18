@@ -1,0 +1,168 @@
+<html>
+  <button id="play">PLAY</button>
+  <br />
+  <textarea id="snippet" style="width:100%;height:500px;">
+    
+{
+  "p": [
+    { "time": 0, "m": "C4", "duration": 0.5 },
+    { "time": 0.5, "m": "D4", "duration": 0.5 },
+    { "time": 1, "m": "E4", "duration": 0.5 },
+    { "time": 1.5, "m": "F4", "duration": 0.5 },
+    { "time": 2, "m": "G4", "duration": 1 },
+    { "time": 3, "m": "G4", "duration": 1 },
+    { "time": 4, "m": "A4", "duration": 0.5 },
+    { "time": 4.5, "m": "A4", "duration": 0.5 },
+    { "time": 5, "m": "A4", "duration": 0.5 },
+    { "time": 5.5, "m": "A4", "duration": 0.5 },
+    { "time": 6, "m": "G4", "duration": 2 },
+    { "time": 8, "m": "A4", "duration": 0.5 },
+    { "time": 8.5, "m": "A4", "duration": 0.5 },
+    { "time": 9, "m": "A4", "duration": 0.5 },
+    { "time": 9.5, "m": "A4", "duration": 0.5 },
+    { "time": 10, "m": "G4", "duration": 2 },
+    { "time": 12, "m": "F4", "duration": 0.5 },
+    { "time": 12.5, "m": "F4", "duration": 0.5 },
+    { "time": 13, "m": "F4", "duration": 0.5 },
+    { "time": 13.5, "m": "F4", "duration": 0.5 },
+    { "time": 14, "m": "E4", "duration": 1 },
+    { "time": 15, "m": "E4", "duration": 1 },
+    { "time": 16, "m": "D4", "duration": 0.5 },
+    { "time": 16.5, "m": "D4", "duration": 0.5 },
+    { "time": 17, "m": "D4", "duration": 0.5 },
+    { "time": 17.5, "m": "D4", "duration": 0.5 },
+    { "time": 18, "m": "C4", "duration": 2 }
+  ]
+}
+  </textarea>
+<!---
+alle meine entchen absoluute
+
+{
+  "p": [
+    { "time": 0, "m": "C4", "duration": 0.5 },
+    { "time": 0.5, "m": "D4", "duration": 0.5 },
+    { "time": 1, "m": "E4", "duration": 0.5 },
+    { "time": 1.5, "m": "F4", "duration": 0.5 },
+    { "time": 2, "m": "G4", "duration": 1 },
+    { "time": 3, "m": "G4", "duration": 1 },
+    { "time": 4, "m": "A4", "duration": 0.5 },
+    { "time": 4.5, "m": "A4", "duration": 0.5 },
+    { "time": 5, "m": "A4", "duration": 0.5 },
+    { "time": 5.5, "m": "A4", "duration": 0.5 },
+    { "time": 6, "m": "G4", "duration": 2 },
+    { "time": 8, "m": "A4", "duration": 0.5 },
+    { "time": 8.5, "m": "A4", "duration": 0.5 },
+    { "time": 9, "m": "A4", "duration": 0.5 },
+    { "time": 9.5, "m": "A4", "duration": 0.5 },
+    { "time": 10, "m": "G4", "duration": 2 },
+    { "time": 12, "m": "F4", "duration": 0.5 },
+    { "time": 12.5, "m": "F4", "duration": 0.5 },
+    { "time": 13, "m": "F4", "duration": 0.5 },
+    { "time": 13.5, "m": "F4", "duration": 0.5 },
+    { "time": 14, "m": "E4", "duration": 1 },
+    { "time": 15, "m": "E4", "duration": 1 },
+    { "time": 16, "m": "D4", "duration": 0.5 },
+    { "time": 16.5, "m": "D4", "duration": 0.5 },
+    { "time": 17, "m": "D4", "duration": 0.5 },
+    { "time": 17.5, "m": "D4", "duration": 0.5 },
+    { "time": 18, "m": "C4", "duration": 2 }
+  ]
+}
+
+-->
+
+<!-- 
+alle meine entchen relative
+
+
+[
+  { "m": "C3", "duration": 0.5 },
+  { "m": "D3", "duration": 0.5 },
+  { "m": "E3", "duration": 0.5 },
+  { "m": "F3", "duration": 0.5 },
+  { "m": "G3", "duration": 1 },
+  { "m": "G3", "duration": 1 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "G3", "duration": 2 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "A3", "duration": 0.5 },
+  { "m": "G3", "duration": 2 },
+  { "m": "F3", "duration": 0.5 },
+  { "m": "F3", "duration": 0.5 },
+  { "m": "F3", "duration": 0.5 },
+  { "m": "F3", "duration": 0.5 },
+  { "m": "E3", "duration": 1 },
+  { "m": "E3", "duration": 1 },
+  { "m": "D3", "duration": 0.5 },
+  { "m": "D3", "duration": 0.5 },
+  { "m": "D3", "duration": 0.5 },
+  { "m": "D3", "duration": 0.5 },
+  { "m": "C3", "duration": 2 }
+]
+
+-->
+  <!-- 
+
+
+    {
+      "m": ["F2", ["F2", "C3"], "C3", ["Eb3", "F3"]],
+      "p": [
+        {
+          "m": [
+            [
+              0,
+              {
+                "p": ["Ab3", "C4", "F4"]
+              }
+            ],
+            {
+              "p": ["Bb3", "D4", "F4"]
+            },
+            {
+              "p": ["C4", "Eb4", "F4"]
+            },
+            [
+              {
+                "p": ["Bb3", "D4", "F4"]
+              },
+              {
+                "p": ["Ab3", "C4", "F4"]
+              }
+            ]
+          ]
+        }
+      ]
+    }
+    
+  -->
+  <!--  
+
+
+  -->
+  <!--
+
+    {
+  "m": [
+["C3", "D3", "E3", "F3"],
+["G3", "G3"],
+["A3", "A3", "A3", "A3"],
+["G3"],
+["A3", "A3", "A3", "A3"],
+["G3"],
+["F3", "F3", "F3", "F3"],
+["E3", "E3"],
+["D3", "D3", "D3", "D3"],
+["C3"]
+]
+}
+
+
+  -->
+  <script src="demo.ts"></script>
+</html>
