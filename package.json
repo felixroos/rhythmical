@@ -4,7 +4,8 @@
   "description": "parse and manipulate musical rhythms in javascript",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "demo": "parcel demo/index.html --no-hmr"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
     "@types/jest": "^24.0.18",
     "babel-jest": "^24.1.0",
     "jest": "^24.9.0",
+    "markdown-it": "^10.0.0",
+    "marked": "^0.8.0",
     "parcel": "^1.12.4",
     "tone": "^13.8.25",
     "ts-jest": "^24.0.0"

@@ -1,10 +1,10 @@
-# Format Guide
+# Digital Format Guide
 
 This document is a brainstorm on format guidelines.
 
 ## What is a Format
 
-- A format is a textual, logically structured representation of any content with finite complexity.
+- A format is a mostly textual, logically structured representation of any content with finite complexity.
 - A format represents at least a subset of the contents qualities by providing a syntax.
 - A format is an abstract interface between human ideas and the digital realm.
 
@@ -73,6 +73,7 @@ The following representations should be provided by a format for music pieces:
   - note values (whole, half, quarters, eights, dotted, triplets etc)
   - rhythms can be arbitrarily complex, and the western staff is not ideal for some
   - e.g. indian or african polyrhythms
+  - swing
 - represent forms / flow (macro time control)
   - measures
   - time signatures
@@ -165,3 +166,53 @@ Contra
 ### musicXML
 
 ### TidalCycles
+
+
+
+
+
+
+<h3>The Snake bites its tail</h3>
+        <p>
+          Basically, the format provides a structure that can be
+          morphed/translated into different forms, according to the recipient:
+        </p>
+        <ul>
+          <li>
+            The human likes everything relative, semantically grouped and
+            readable/editable
+          </li>
+          <li>
+            The computer likes everything absolute, single-level and parseable.
+          </li>
+          <li>
+            It must be possible to morph between forms without loosing
+            information
+          </li>
+          <li>
+            Let's call the morphing from human form to computer form rendering
+          </li>
+        </ul>
+        <p>
+          => You can throw the rendered in to the rendering function again,
+          without changing the music.
+        </p>
+        <h2>Comparison with other formats</h2>
+        <h3>MIDI</h3>
+        <p>
+          Being the standard for various music applications, lets look at the
+          differences:
+        </p>
+        <ul>
+          <li>Absolute numbers for timing</li>
+          <li>Absolute numbers for pitches</li>
+          <li>Seperate on/off events</li>
+          <li>No semantic grouping</li>
+        </ul>
+        <p>=> rhythmical output can easily be transformed to MIDI</p>
+        <h3>TidalCycles</h3>
+        <ul>
+          <li>Uses same style of rhythmic nesting</li>
+          <li>Is completely string based</li>
+          <li>Does not provide an Object like syntax</li>
+        </ul>
