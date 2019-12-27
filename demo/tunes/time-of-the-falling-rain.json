@@ -1,0 +1,76 @@
+{
+  "name": "Time of the Falling Rain",
+  "composer": "Koji Kondo",
+  "duration": 8,
+  "p": [
+    {
+      "name": "chords",
+      "velocity": 0.6,
+      "duration": [1],
+      "m": [
+        [
+          "",
+          {
+            "duration": 3,
+            "p": ["C3", "D3", "G3"]
+          }
+        ],
+        [
+          "",
+          {
+            "duration": 3,
+            "p": ["Db3", "Eb3", "Ab3"]
+          }
+        ],
+        [
+          "",
+          {
+            "duration": 3,
+            "p": ["D3", "E3", "A3"]
+          }
+        ],
+        [
+          "",
+          {
+            "duration": 3,
+            "p": ["Eb3", "F3", "Bb3"]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "bass",
+      "duration": [1],
+      "m": [
+        [
+          ["C1", "G1"],
+          {
+            "duration": 3,
+            "m": ["C2"]
+          }
+        ],
+        [
+          ["C1", "G1"],
+          {
+            "duration": 3,
+            "m": ["C2"]
+          }
+        ],
+        [
+          ["C1", "G1"],
+          {
+            "duration": 3,
+            "m": ["C2"]
+          }
+        ],
+        [
+          ["C1", "G1"],
+          {
+            "duration": 3,
+            "m": ["C2"]
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+body {
+  overflow: hidden;
+  background: #2c2c27;
+}
+
+#grid {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  justify-content: stretch;
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 350px 50px auto;
+}
+
+#menu {
+  border: 0;
+  background: #2c2c27;
+  color: #efefef;
+  border-bottom: 1px solid #575853;
+  grid-column: 1;
+  grid-row: 2;
+  border-top: 1px solid #565752;
+  display: grid;
+}
+
+#menu button {
+  border: 0;
+}
+
+button {
+  border: 0;
+  display: inline-block;
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+  font-weight: bold;
+  background: #2c2c27;
+  color: #d3cc73;
+  font-size: 1em;
+  border-right: 1px solid #565752;
+  border-left: 1px solid #565752;
+}
+
+#play {
+  grid-column: 1;
+}
+
+#pause {
+  grid-column: 2;
+}
+
+#stop {
+  grid-column: 3;
+}
+
+#format {
+  grid-column: 4;
+}
+
+#output {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+#ace {
+  grid-column: 1;
+  grid-row: 1;
+  background: #2c2c27;
+}
+
+#tutorial {
+  border-left: 1px solid #565752;
+  padding: 0 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #2c2c27;
+  color: #f8f8f2;
+  grid-column: 2;
+  grid-row: 1/4;
+  overflow: auto;
+}
+
+#tutorial button {
+  border-radius: 20px;
+  background: #b3da44;
+  margin-bottom: 5px;
+  color: #2c2c27;
+}
+
+a:visited {
+  color: #9a7bed;
+}
+
+a, h1, h2, h3, h4 {
+  color: #b3da44;
+  text-decoration: underline;
+}
+
+#output:hover {
+  z-index: 6;
+}
+
+#viz {
+  pointer-events: none;
+  background: #2c2c27;
+  opacity: 1;
+  grid-column: 1;
+  grid-row: 3;
+  overflow: hidden;
+  padding: 0;
+  z-index: 5;
+}

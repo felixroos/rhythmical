@@ -3,74 +3,98 @@ import { render2 } from '../src/Music';
 import { examples } from './tunes/examples';
 import { Editor } from './Editor';
 import { Player } from './Player';
-
-
+import { Viz } from './Viz';
 import tutorial from './tutorial/tutorial.md';
 
-let json = examples.swimming;
+const exampleKeys = Object.keys(examples);
+let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]];
+/* let json = examples.swimming; */
 /* let json = 'A4'; */
 
-const synth = new Tone.PolySynth(20, Tone.Synth).toMaster();
+const flip = false;
+
+var reverb = new Tone.Reverb({
+  decay: 0.6,
+  preDelay: 0.01,
+  wet: 0.5,
+}
+).toMaster();
+reverb.generate().then((r) => console.log('ready', r));
+/* const synth = new Tone.PolySynth(20, Tone.Synth).toMaster(); */
+const synth = new Tone.PolySynth(20, Tone.Synth).connect(reverb);
+
 synth.set({
   envelope: {
     attack: 0.02,
     decay: 0.04,
     sustain: 0.5,
-    release: 0.05
+    release: 0.15
   },
   oscillator: {
     type: 'amsine'
   },
-  volume: -16
+  volume: -12
 });
 
-function renderJson(json) {
+
+function renderJson(json, position = 0) {
   const rendered = render2(json, false);
+  const prettyOutput = rendered.p.map(e =>
+    e.path
+      ? {
+        ...e,
+        path:
+          '[' +
+          e.path
+            .map(p => `[${p[0]}, ${p[1]}, ${p[2] || '"?"'}]`)
+            .join(', ') +
+          ']'
+      }
+      : e
+  );
+  const viz = Viz.pianoRoll(rendered, 'viz', position, flip);
   return {
-    ...rendered,
-    p: rendered.p.map(e =>
-      e.path
-        ? {
-          ...e,
-          path:
-            '[' +
-            e.path
-              .map(p => `[${p[0]}, ${p[1]}, ${p[2] || '"?"'}]`)
-              .join(', ') +
-            ']'
-        }
-        : e
-    )
+    rendered,
+    viz,
+    prettyOutput
     /* .map(e => [e.time, 'note', e.m, e.duration]) */
   };
 }
 
-let rendered = renderJson(json);
+let { rendered, prettyOutput } = renderJson(json);
 
 declare const ace: any;
 
 window.onload = () => {
+
   document.getElementById('tutorial').innerHTML = tutorial;
   function play(json) {
-    const events = renderJson(json);
-    Player.play(events, synth);
-  }
-
-  function stop() {
-    Player.stop();
+    const { rendered, viz } = renderJson(json);
+    Player.play(rendered, synth, (time) => Viz.updatePianoRoll(viz, time), 1 / 30);
   }
 
   document.getElementById('play').addEventListener('click', () => {
     play(json);
   });
   document.getElementById('stop').addEventListener('click', () => {
-    stop();
+    Player.stop();
+  });
+  document.getElementById('pause').addEventListener('click', () => {
+    Player.pause();
+  });
+  document.getElementById('format').addEventListener('click', () => {
+    try {
+      json = JSON.parse(editor.getValue());
+      editor.setValue(Editor.prettyJson(json), -1);
+    } catch {
+      console.warn('could not format: invalid json');
+    }
   });
 
   const outputeditor = Editor.init('output', ace, {
     theme: 'monokai',
     mode: 'json',
-    value: rendered
+    value: prettyOutput
   });
 
   const editor = Editor.init('ace', ace, {
@@ -80,10 +104,9 @@ window.onload = () => {
     change: value => {
       try {
         json = JSON.parse(value);
-        rendered = renderJson(json);
-        outputeditor.setValue(Editor.prettyJson(rendered), -1);
+        const { rendered, prettyOutput } = renderJson(json, Tone.Transport.seconds);
+        outputeditor.setValue(Editor.prettyJson(prettyOutput), -1);
         /* tune = parsed; */
-        console.log('valid json', json);
       } catch (e) {
         console.warn('invalid json');
       }
@@ -92,8 +115,8 @@ window.onload = () => {
 
   function loadTune(json) {
     editor.setValue(Editor.prettyJson(json), -1);
-    rendered = renderJson(json);
-    outputeditor.setValue(Editor.prettyJson(rendered), -1);
+    const { prettyOutput } = renderJson(json);
+    outputeditor.setValue(Editor.prettyJson(prettyOutput), -1);
   }
 
   Object.keys(examples).forEach(example => {
@@ -104,7 +127,7 @@ window.onload = () => {
     }
     document.getElementById(id).addEventListener('click', () => {
       loadTune(examples[example]);
-      play(examples[example]);
+      /* play(examples[example]); */
     });
   });
 };

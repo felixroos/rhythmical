@@ -20,14 +20,17 @@ export class Editor {
   static prettyJson(json) {
     return JSON.stringify(
       json,
-      function(k, v) {
+      function (k, v) {
         if (
           Array.isArray(v) &&
           v.reduce(
-            (allStrings, e) =>
-              allStrings && ['string', 'number'].includes(typeof e),
-            true
-          )
+            (d, e) => {
+              const chars = d.chars + (e + '').length;
+              const allStrings = d.allStrings && ['string', 'number'].includes(typeof e);
+              return { valid: d.valid && chars < 60 && allStrings, allStrings, chars }
+            },
+            { allStrings: true, chars: 0, valid: true }
+          ).valid
         )
           return JSON.stringify(v);
         return v;

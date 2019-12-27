@@ -53,38 +53,6 @@ export function unify<T>(music: Music<T>): MusicObject<T> {
   return o;
 }
 
-/* export function render(music: Music<any>, duration = 1) {
-  const block = unify<string>(music);
-  let events = [];
-  duration = (block[params.duration] || 1) * duration;
-  if (block[params.monophony]) {
-    events = events.concat(Rhythm.render(block[params.monophony], duration));
-  }
-  if (block[params.polyphony]) {
-    events = events.concat(Rhythm.poly(block[params.polyphony], duration));
-  }
-  return events.reduce(
-    (flat, e) => [
-      ...flat,
-      ...(typeof e.value === 'object'
-        ? render(e.value, e[params.duration]).map(child => ({
-            ...child,
-            [params.time]: e[params.time] + (child[params.time] || 0),
-            path: e.path.concat(child.path || [])
-          }))
-        : [
-            {
-              value: e.value,
-              [params.time]: e[params.time],
-              [params.duration]: e[params.duration],
-              path: e.path
-            }
-          ])
-    ],
-    []
-  );
-} */
-
 export function render2(music: Music<string>, verbose = false) {
   const length = eventDuration(music);
 
@@ -95,8 +63,10 @@ export function render2(music: Music<string>, verbose = false) {
 
   // The top level duration is special: it has no relational use => only one element at top
   // => find way to use array notation with top level duration
+  let flat = flat2(music);
 
-  const p = flat2(music).map(calculate2(length, verbose));
+  /* flat = flat.filter((e, i, a) => !e.block || !flat.find((_e, _i) => i !== _i && e !== _e && isSameSlot(_e.path, e.path))); */
+  const p = flat.map(calculate2(length, verbose));
 
   const seconds = music['seconds'] || length; // ||length;
   return {
@@ -120,6 +90,15 @@ export function calculate2(totalLength = 1, verbose = false): any {
   };
 }
 
+export function isSameSlot(pathsA, pathsB) {
+  if (!pathsA || !pathsB) {
+    return false;
+  }
+  const slotA = pathsA.map(p => p.join('.')).join('-');
+  const slotB = pathsB.map(p => p.join('.')).join('-');
+  return slotA === slotB;
+}
+
 export function eventDuration(e, standard = 1) {
   if (typeof e !== 'object') {
     return standard;
@@ -129,28 +108,51 @@ export function eventDuration(e, standard = 1) {
     // TBD: add possibility to pass duration further down
     // TBD: use elvis operator
     return (
+      // TBD; dont use length => use durations!! 
       e.duration[0] * ((e[params.monophony] || []).length || 1) //e[params.polyphony].length
     );
   }
   return e.duration || standard;
 }
 
+export function resolveStringSymbols(event) {
+  if (typeof event === 'string') {
+    if (event.includes('|')) {
+      const m = event.split('|');
+      event = [{ m }];
+    } else if (event.includes('/')) {
+      const m = event.split('/');
+      event = [{ m }];
+    } else if (event.includes(' ')) {
+      const m = event.split(' ');
+      event = [{ m }];
+    } else if (event.includes(',')) {
+      event = { p: event.split(',') };
+    } else if (event.includes('_')) {
+      const s = event.split('_');
+      event = { m: s[0], length: parseFloat(s[1]) };
+    } else if (event.includes('*')) {
+      const s = event.split('*');
+      event = { m: s[0], duration: parseFloat(s[1]) };
+    }
+  }
+  return event;
+}
+
 export function flat2(music: Music<string>, props: any = {}) {
   const block = unify<string>(music);
-
-  /* const bDuration = eventDuration(block); */
-
   // TBD find way to use array duration notation with root of object
-
   // drill props
   props = {
     ...props,
     length: (block.length || 1) * (props.length || 1), // TBD use elvis ?? operator
-    velocity: (props.velocity || 1) * (block.velocity || 1) // TBD use elvis ?? operator
+    velocity: (props.velocity === undefined ? 1 : props.velocity) * (block.velocity === undefined ? 1 : block.velocity), // TBD use elvis ?? operator
+    //names: (props.names || []).concat(block.name ? [block.name] : []), // TBD use elvis ?? operator
+    //voices: (props.voices || []).concat(block['voice'] ? [block['voice']] : []), // TBD use elvis ?? operator
   }; // TBD remember which velocity was on which level? maybe map simplePath:velocity, same for length
 
-  const m = block[params.monophony] || [];
-  const p = block[params.polyphony] || [];
+  const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e));
+  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e));
 
   const mDuration = m.reduce((total, e) => total + eventDuration(e), 0);
   const pDuration = p.reduce((max, e) => Math.max(max, eventDuration(e)), 0);
@@ -158,17 +160,21 @@ export function flat2(music: Music<string>, props: any = {}) {
 
   const allEvents = [...m, ...p];
   const stack = allEvents.reduce(
-    (state, event) => {
+    (state, event, i) => {
       const isPoly = p.includes(event);
+      // event = resolveStringSymbols(event);
+
       const eDuration = eventDuration(event);
       // remember: dont drill path here
       const path = (props.path || []).concat([
         [
           isPoly ? event.time || 0 : state.time + (event.time || 0),
           isPoly ? pDuration : mDuration,
-          eDuration
+          eDuration,
+          i
         ]
       ]);
+
       return {
         ...state,
         time: state.time + eDuration,
@@ -176,16 +182,23 @@ export function flat2(music: Music<string>, props: any = {}) {
           typeof event === 'object' // is object? => go deeper, is primitve => stop
             ? flat2(event, { ...props, path })
             : [
-                {
-                  [params.monophony]: event,
-                  ...props,
-                  path
-                }
-              ]
+              {
+                [params.monophony]: event,
+                ...props,
+                path
+              }
+            ]
         )
       };
     },
     { events: [], time: 0, duration: 0 }
   );
+  if (props.path) {
+    stack.events.push({
+      block: '*',
+      path: props.path,
+      ...props
+    });
+  }
   return (props.events || []).concat(stack.events);
 }

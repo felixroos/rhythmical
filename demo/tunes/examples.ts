@@ -3,36 +3,62 @@ import cantaloupe from './cantaloupe-island.json';
 import starworld from './star-world.json';
 import entchen from './entchen-nested.json';
 import entchenAbsolute from './entchen-absolute.json';
+import timeOfTheFallingRain from './time-of-the-falling-rain.json';
+import zeldasRescue from './zelda-rescue.json';
 
 export const examples = {
+  zeldasRescue,
+  timeOfTheFallingRain,
   swimming,
   cantaloupe,
   starworld,
   a: 'A4',
   fourth: ['Bb3', 'Eb4'],
+  fourthShort: 'Bb3 Eb4',
   major1: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'],
+  major1short: 'C4 D4 E4 F4 G4 A4 B4 C5',
   major4: {
     duration: 4,
     m: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
   },
+  major4short: {
+    duration: 4,
+    m: 'C4 D4 E4 F4 G4 A4 B4 C5'
+  },
   entchen,
   entchenAbsolute,
+  entchenShort: {
+    "duration": 10,
+    "m": [
+      "C3 D3 E3 F3",
+      "G3 G3",
+      "A3 A3 A3 A3",
+      "G3",
+      "A3 A3 A3 A3",
+      "G3",
+      "F3 F3 F3 F3",
+      "E3 E3",
+      "D3 D3 D3 D3",
+      "C3",
+    ]
+  },
+  entchenShortest: {
+    "duration": 10,
+    "m": "C3 D3 E3 F3/G3 G3/A3 A3 A3 A3/G3/A3 A3 A3 A3/G3/F3 F3 F3 F3/E3 E3/D3 D3 D3 D3/C3"
+  },
   bolero: {
     duration: 9,
     m: [
       [
-        ['C3', ['G2', 'G2', 'G2']],
-        ['C3', ['G2', 'G2', 'G2']],
-        ['C3', 'G2']
+        ['C4', 'G3 G3 G3'],
+        ['C4', 'G3 G3 G3'],
+        ['C4', 'G3']
       ],
 
       [
-        ['C3', ['G2', 'G2', 'G2']],
-        ['C3', ['G2', 'G2', 'G2']],
-        [
-          ['C3', 'C3', 'C3'],
-          ['G2', 'G2', 'G2']
-        ]
+        ['C4', 'G3 G3 G3'],
+        ['C4', 'G3 G3 G3'],
+        ['C4 C4 C4', 'G3 G3 G3']
       ]
     ]
   },
@@ -67,6 +93,16 @@ export const examples = {
       ],
       ''
     ]
+  },
+  funkytownShort: {
+    duration: 4,
+    m: [
+      'C5 /C5 /Bb4 /C5 ', '/G4 |/G4 ', 'C5 /F5 /E5 /C5 ', ''
+    ]
+  },
+  funkytownLengths: {
+    duration: 4,
+    m: 'C5_.5 C5_.5 Bb4_.5 C5_.5| G4_.5/ G4_.5|C5_.5 F5_.5 E5_.5 C5_.5|'
   },
   funkytownPoly: {
     duration: 4,
@@ -158,6 +194,65 @@ export const examples = {
       }
     ]
   },
+  funkytownPolyC: {
+    duration: 8,
+    p: [
+      {
+        m: [
+          [
+            'D5,B4',
+            'D5,B4',
+            'D5,B4',
+            'D5,B4'
+          ],
+          [
+            'C5,A4',
+            'C5,A4',
+            'C5,A4',
+            'C5,A4'
+          ],
+          [
+            'B4,G4',
+            'B4,G4',
+            'B4,G4',
+            'B4,G4'
+          ],
+          [
+            'A4,F4',
+            'A4,F4',
+            'A4,F4',
+            'G4,D4'
+          ],
+          [
+            ['G4', ''],
+            ['G4', ''],
+            ['F4', ''],
+            ['G4', '']
+          ],
+          ['', ['D4', ''], '', ['D4', '']],
+          [
+            ['G4', ''],
+            ['C5', ''],
+            ['B4', ''],
+            ['G4', '']
+          ],
+          []
+        ]
+      },
+      {
+        m: [
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3'],
+          ['G2', 'G3', 'G2', 'G3']
+        ]
+      }
+    ]
+  },
   triplets: {
     duration: 4,
     p: [
@@ -177,6 +272,19 @@ export const examples = {
       }
     ]
   },
+  tripletsShort: {
+    duration: 4,
+    p: [
+      {
+        voice: 'melody',
+        m: ['E4 C4 E4 C5', 'A4 F4 G4']
+      },
+      {
+        voice: 'bass',
+        m: ['C4 G3 C4 G3', 'F3/C3/F3/C3 G3']
+      }
+    ]
+  },
   quartuplets: {
     duration: 4,
     p: [
@@ -193,6 +301,19 @@ export const examples = {
           ['C4', 'G3', 'C4'],
           ['F3', 'C3', ['F3', 'G3']]
         ]
+      }
+    ]
+  },
+  quartupletsShort: {
+    "duration": 4,
+    "p": [
+      {
+        "voice": "melody",
+        "m": ["E4 C4 E4 C5", "A4 F4 G4"]
+      },
+      {
+        "voice": "bass",
+        "m": ["C4 G3 C4", "F3/C3/F3 G3"]
       }
     ]
   },
@@ -368,42 +489,53 @@ export const examples = {
   },
   length: {
     duration: 8,
+    p: [[
+      [
+        { m: 'C4', length: 8 },
+        { m: 'E4', length: 6 },
+        { m: 'G4', length: 4 },
+        { m: 'B4', length: 2 }
+      ],
+      [],
+      [
+        { m: 'A3', length: 8 },
+        { m: 'C4', length: 6 },
+        { m: 'E4', length: 4 },
+        { m: 'G4', length: 2 }
+      ],
+      [],
+      [
+        { m: 'D4', length: 8 },
+        { m: 'F4', length: 6 },
+        { m: 'A4', length: 4 },
+        { m: 'C5', length: 2 }
+      ],
+      [],
+      [
+        { m: 'G3', length: 8 },
+        { m: 'B3', length: 6 },
+        { m: 'D4', length: 4 },
+        { m: 'F4', length: 2 }
+      ],
+      []
+    ],
+    ['C3', 'A2', 'D3', 'G2']
+    ]
+  },
+  lengthShort: {
+    duration: 8,
     p: [
-      {
-        m: [
-          [
-            { m: 'C4', length: 8 },
-            { m: 'E4', length: 6 },
-            { m: 'G4', length: 4 },
-            { m: 'B4', length: 2 }
-          ],
-          [],
-          [
-            { m: 'A3', length: 8 },
-            { m: 'C4', length: 6 },
-            { m: 'E4', length: 4 },
-            { m: 'G4', length: 2 }
-          ],
-          [],
-          [
-            { m: 'D4', length: 8 },
-            { m: 'F4', length: 6 },
-            { m: 'A4', length: 4 },
-            { m: 'C5', length: 2 }
-          ],
-          [],
-          [
-            { m: 'G3', length: 8 },
-            { m: 'B3', length: 6 },
-            { m: 'D4', length: 4 },
-            { m: 'F4', length: 2 }
-          ],
-          []
-        ]
-      },
-      {
-        m: ['C3', 'A2', 'D3', 'G2']
-      }
+      [
+        "C4_8 E4_6 G4_4 B4_2",
+        "",
+        "A3_8 C4_6 E4_4 G4_2",
+        "",
+        "D4_8 F4_6 A4_4 C5_2",
+        "",
+        "G3_8 B3_6 D4_4 F4_2",
+        ""
+      ],
+      'C3 A2 D3 G2'
     ]
   },
   length2: {
