@@ -4,8 +4,8 @@
   "duration": 51,
   "p": [
     {
-      "instrument": "square",
-      "velocity": 0.3,
+      "instrument": "synth",
+      "velocity": 0.5,
       "m": [
         "*3",
         ["A5", "F5*2 C5", "D5*2 F5", "F5"],
@@ -81,5 +81,13 @@
         "G2 C2 F2 F2"
       ]
     }
-  ]
+  ],
+  "symbols": {
+    "m": ["|", "/", " "],
+    "p": [","],
+    "hierarchy": ["m", "p"],
+    "length": "_",
+    "duration": "*",
+    "rest": "r"
+  }
 }

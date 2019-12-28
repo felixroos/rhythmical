@@ -272,16 +272,6 @@
           }
         ]
       ]
-    },
-    {
-      "name": "flute",
-      "duration": [1],
-      "m": [[]]
-    },
-    {
-      "name": "sopran",
-      "duration": [1],
-      "m": [[]]
     }
   ]
 }

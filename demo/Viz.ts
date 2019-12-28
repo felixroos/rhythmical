@@ -23,9 +23,9 @@ export class Viz {
 
   static pianoRoll(output: { seconds: number, p: RenderedEvent<string>[] }, id: string, position: number = 0, flip = false, head = 0.5) {
     const el = document.getElementById(id);
-    if (Date.now() - renderStart < debounce) {
+    /* if (Date.now() - renderStart < debounce) {
       return;
-    }
+    } */
     renderStart = Date.now();
     const { levels, pitchEvents } = output.p.reduce((r, e) => {
       if (!!Note.midi(e.m)) {

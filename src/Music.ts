@@ -64,7 +64,7 @@ export function render2(music: Music<string>, verbose = false) {
   // The top level duration is special: it has no relational use => only one element at top
   // => find way to use array notation with top level duration
   let flat = flat2(music);
-  
+
   const p = flat.map(calculate2(length, verbose))/* .map(e => {
     const offset = Math.random() * error;
     return {
@@ -122,26 +122,34 @@ export function eventDuration(e, standard = 1) {
   return e.duration || standard;
 }
 
-export function resolveStringSymbols(event) {
-  if (typeof event === 'string') {
-    if (event.includes('|')) {
-      const m = event.split('|');
-      event = [{ m }];
-    } else if (event.includes('/')) {
-      const m = event.split('/');
-      event = [{ m }];
-    } else if (event.includes(' ')) {
-      const m = event.split(' ');
-      event = [{ m }];
-    } else if (event.includes(',')) {
-      event = { p: event.split(',') };
-    } else if (event.includes('_')) {
-      const s = event.split('_');
-      event = { m: s[0], length: parseFloat(s[1]) };
-    } else if (event.includes('*')) {
-      const s = event.split('*');
-      event = { m: s[0], duration: parseFloat(s[1]) };
-    }
+export function resolveStringSymbols(event, symbols = {
+  m: ['|', ' ', '/'],
+  p: [','],
+  hierarchy: ['m', 'p'],
+  length: '_',
+  duration: '*',
+  trim: false
+}) {
+  if (typeof event === 'string' && symbols.hierarchy) {
+    symbols.hierarchy.forEach(type => {
+      if (symbols[type] && typeof event === 'string') {
+        symbols[type].forEach(symbol => {
+          if (typeof event === 'string' && event.includes(symbol)) {
+            event = [{ [type]: event.split(symbol).filter(e => !symbols.trim || !!e) }];
+          }
+        })
+      }
+    })
+  }
+  if (typeof event !== 'string') {
+    return event;
+  }
+  if (symbols.length && event.includes(symbols.length)) {
+    const s = event.split(symbols.length);
+    event = { m: s[0], length: parseFloat(s[1]) };
+  } else if (symbols.duration && event.includes(symbols.duration)) {
+    const s = event.split(symbols.duration);
+    event = { m: s[0], duration: parseFloat(s[1]) };
   }
   return event;
 }
@@ -155,12 +163,20 @@ export function flat2(music: Music<string>, props: any = {}) {
     length: (block.length || 1) * (props.length || 1), // TBD use elvis ?? operator
     velocity: (props.velocity === undefined ? 1 : props.velocity) * (block.velocity === undefined ? 1 : block.velocity), // TBD use elvis ?? operator
     instrument: block['instrument'] || props.instrument,
+    symbols: music['symbols'] || props.symbols
     //names: (props.names || []).concat(block.name ? [block.name] : []), // TBD use elvis ?? operator
     //voices: (props.voices || []).concat(block['voice'] ? [block['voice']] : []), // TBD use elvis ?? operator
   }; // TBD remember which velocity was on which level? maybe map simplePath:velocity, same for length
 
-  const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e));
-  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e));
+  // those props are merged into the rendered events / blocks (together with path)
+  const eventProps = {
+    velocity: props.velocity,
+    instrument: props.instrument,
+    length: props.length,
+  };
+
+  const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e, props.symbols));
+  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e, props.symbols));
 
   const mDuration = m.reduce((total, e) => total + eventDuration(e), 0);
   const pDuration = p.reduce((max, e) => Math.max(max, eventDuration(e)), 0);
@@ -192,7 +208,7 @@ export function flat2(music: Music<string>, props: any = {}) {
             : [
               {
                 [params.monophony]: event,
-                ...props,
+                ...eventProps,
                 path
               }
             ]
@@ -205,7 +221,7 @@ export function flat2(music: Music<string>, props: any = {}) {
     stack.events.push({
       block: '*',
       path: props.path,
-      ...props
+      ...eventProps
     });
   }
   return (props.events || []).concat(stack.events);
