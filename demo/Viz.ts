@@ -11,7 +11,8 @@ export interface RenderedEvent<T> {
   block?: string;
 }
 const ns = "http://www.w3.org/2000/svg";
-
+let renderStart = 0;
+const debounce = 200;
 export class Viz {
   static pitchRange(events: RenderedEvent<string>[]) {
     return events.reduce((range, event) => [
@@ -22,6 +23,10 @@ export class Viz {
 
   static pianoRoll(output: { seconds: number, p: RenderedEvent<string>[] }, id: string, position: number = 0, flip = false, head = 0.5) {
     const el = document.getElementById(id);
+    if (Date.now() - renderStart < debounce) {
+      return;
+    }
+    renderStart = Date.now();
     const { levels, pitchEvents } = output.p.reduce((r, e) => {
       if (!!Note.midi(e.m)) {
         r.pitchEvents.push(e);
@@ -43,7 +48,7 @@ export class Viz {
     }
 
     const range = Viz.pitchRange(pitchEvents);
-    const pitchCount = Note.midi(range[1]) - Note.midi(range[0])+1;
+    const pitchCount = Note.midi(range[1]) - Note.midi(range[0]) + 1;
     const vp = [el.clientWidth, el.clientHeight];
 
 
@@ -160,6 +165,9 @@ export class Viz {
     svg.appendChild(playhead);
 
     el.appendChild(svg);
+    const renderEnd = Date.now();
+    const renderTime = renderEnd - renderStart;
+    console.log(`took ${renderTime}ms to render`);
     return { svg, el, pps, ppp, flip, head, vp, output, playhead };
   }
 

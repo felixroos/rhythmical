@@ -780,5 +780,9 @@ export const examples = {
         m: ['E3', 'F3', 'G3']
       }
     ]
+  },
+  instruments: {
+    "m": "A4",
+    "instrument": "synth"
   }
 };

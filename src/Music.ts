@@ -64,9 +64,16 @@ export function render2(music: Music<string>, verbose = false) {
   // The top level duration is special: it has no relational use => only one element at top
   // => find way to use array notation with top level duration
   let flat = flat2(music);
-
-  /* flat = flat.filter((e, i, a) => !e.block || !flat.find((_e, _i) => i !== _i && e !== _e && isSameSlot(_e.path, e.path))); */
-  const p = flat.map(calculate2(length, verbose));
+  
+  const p = flat.map(calculate2(length, verbose))/* .map(e => {
+    const offset = Math.random() * error;
+    return {
+      ...e,
+      time: e.time + offset,
+      duration: e.duration - offset,
+      velocity: e.velocity - velocityError * Math.random(),
+    }
+  }) */;
 
   const seconds = music['seconds'] || length; // ||length;
   return {
@@ -147,6 +154,7 @@ export function flat2(music: Music<string>, props: any = {}) {
     ...props,
     length: (block.length || 1) * (props.length || 1), // TBD use elvis ?? operator
     velocity: (props.velocity === undefined ? 1 : props.velocity) * (block.velocity === undefined ? 1 : block.velocity), // TBD use elvis ?? operator
+    instrument: block['instrument'] || props.instrument,
     //names: (props.names || []).concat(block.name ? [block.name] : []), // TBD use elvis ?? operator
     //voices: (props.voices || []).concat(block['voice'] ? [block['voice']] : []), // TBD use elvis ?? operator
   }; // TBD remember which velocity was on which level? maybe map simplePath:velocity, same for length

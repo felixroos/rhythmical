@@ -1,10 +1,17 @@
 import Tone from 'tone';
-import { Note } from 'tonal';
+import { Note, Interval, Distance } from 'tonal';
 
 let active, stopNext, playNext, drawLoop;
 
+declare interface Instrument {
+  triggerAttackRelease: (value: string, duration: number, velocity: number) => any;
+  [key: string]: any;
+}
+
+declare type Instruments = { [key: string]: Instrument };
+
 export class Player {
-  static play(events, synth, drawCallback?: (time: number) => any, grain = 1 / 30) {
+  static play(events, instruments: Instruments, drawCallback?: (time: number) => any, grain = 1 / 30) {
     Player.startDrawing(drawCallback, grain);
     if (Tone.Transport.state === 'paused') {
       Tone.Transport.start();
@@ -16,13 +23,12 @@ export class Player {
       console.log('already started... wait for loop end');
       return;
     }
-    Player.playNow(0, synth);
+    Player.playNow(0, instruments);
     console.log('play', Tone.Transport.seconds);
   }
 
   static startDrawing(callback, grain = 1 / 30) {
     if (callback) {
-      console.log('start draw!');
       drawLoop = new Tone.Loop((time) => {
         Tone.Draw.schedule(() => callback(Tone.Transport.seconds), time)
       }, grain).start(0);
@@ -30,7 +36,7 @@ export class Player {
   }
 
   static playEvents(events, options) {
-    let { length, synth, time } = options;
+    let { length, instruments, time } = options;
     const ahead = 0.06;
     events.push({ time: length - ahead, type: 'loopmark' });
     const part = new Tone.Part((t, e) => {
@@ -44,19 +50,26 @@ export class Player {
         }
         if (playNext) {
           console.log('loop end: play next');
-          Player.playNow(0, synth);
+          Player.playNow(0, instruments);
         }
         console.log('loop end: do nothing');
         return;
       }
-      const value = e.value || e.m;
+      let value = e.value || e.m;
       if (!Note.midi(value)) {
         return;
       }
       if (e.velocity === 0) {
         return;
       }
-      synth.triggerAttackRelease(value, e.duration, t, e.velocity || 0.9);
+      const instrument = e.instrument && instruments[e.instrument] ? instruments[e.instrument] : instruments.standard;
+      if (e.instrument && !instruments[e.instrument]) {
+        console.warn(`instrument "${e.instrument}" not found. falling back to standard instrument`);
+      }
+      if (!instrument) {
+        console.warn('standard instrument not found! cannot play ', e);
+      }
+      instrument.triggerAttackRelease(value, e.duration, t, e.velocity || 0.9);
     }, events /* .map(e => ({ ...e, value: e.m })) */).start(time || '+0');
 
     part.loop = true;
@@ -68,16 +81,15 @@ export class Player {
     }
   }
 
-  static playNow(time, synth) {
+  static playNow(time, instruments: Instruments) {
     active = playNext;
     playNext = false;
     stopNext = false;
-    Player.playEvents(active.p, { length: active.seconds, synth, time });
+    Player.playEvents(active.p, { length: active.seconds, instruments, time });
   }
 
   static stopDrawing() {
     if (drawLoop) {
-      console.log('STOP DRAW');
       drawLoop.stop();
     }
   }
