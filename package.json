@@ -21,6 +21,7 @@
     "@types/jest": "^24.0.18",
     "babel-jest": "^24.1.0",
     "jest": "^24.9.0",
+    "js-yaml": "^3.13.1",
     "markdown-it": "^10.0.0",
     "marked": "^0.8.0",
     "parcel": "^1.12.4",

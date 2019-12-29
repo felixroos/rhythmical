@@ -1,4 +1,5 @@
-import swimming from './swimming.json';
+/* import swimming from './swimming.json'; */
+import swimming from './swimming.yml';
 import cantaloupe from './cantaloupe-island.json';
 import starworld from './star-world.json';
 import entchen from './entchen-nested.json';
@@ -6,7 +7,7 @@ import entchenAbsolute from './entchen-absolute.json';
 import timeOfTheFallingRain from './time-of-the-falling-rain.json';
 import zeldasRescue from './zelda-rescue.json';
 import zeldasRescueVerbose from './zelda-rescue-intro.json';
-import zeldasRescueBrackets from './zeldas-rescue-brackets.json';
+import zeldasRescueBrackets from './zeldas-rescue-brackets.yaml';
 import vanillaDome from './vanilla-dome.json';
 import dub1 from './dub1.json';
 import slengTeng from './riddims/slengteng.json';

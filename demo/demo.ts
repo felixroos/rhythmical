@@ -16,13 +16,14 @@ import { drumsounds } from './samples/drumset.js';
 import tidalsounds from './samples/tidal/tidal.js';
 import { rack } from './rack';
 
+/* import * as yaml from 'js-yaml'; */
 declare const ace: any;
 
 window.onload = () => {
 
   const exampleKeys = Object.keys(examples);
   /* let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]]; */
-  let json = examples.zeldasRescueBrackets;
+  let json = examples.swimming;
   const flip = false;
 
 
@@ -182,6 +183,14 @@ window.onload = () => {
     mode: 'json',
     value: json,
     change: value => {
+      // Get document, or throw exception on error
+      /* try {
+        const doc = yaml.safeLoad(value);
+        console.log(doc);
+      } catch (e) {
+        console.log(e);
+      }
+      return; */
       try {
         console.log('render..');
         json = JSON.parse(value);
