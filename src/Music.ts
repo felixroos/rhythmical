@@ -1,4 +1,5 @@
 import { Rhythm } from './Rhythm';
+import { Brackets } from './Brackets';
 
 export interface MusicObject<T> {
   name?: string;
@@ -52,6 +53,7 @@ export function unify<T>(music: Music<T>): MusicObject<T> {
   }
   return o;
 }
+
 
 export function render2(music: Music<string>, verbose = false) {
   const length = eventDuration(music);
@@ -130,6 +132,9 @@ export function resolveStringSymbols(event, symbols = {
   duration: '*',
   trim: false
 }) {
+  if (typeof event === 'string' && event.includes('[')) {
+    event = Brackets.parse(event);
+  }
   if (typeof event === 'string' && symbols.hierarchy) {
     symbols.hierarchy.forEach(type => {
       if (symbols[type] && typeof event === 'string') {

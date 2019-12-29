@@ -1,0 +1,33 @@
+{
+  "duration": 3,
+  "p": [
+    {
+      "velocity": 0.7,
+      "instrument": "synth",
+      "m": " ~ | ~ ~ F4 . Bb4*2 Ab4 | ~ | ~"
+    },
+    {
+      "velocity": 0.7,
+      "instrument": "synth",
+      "m": " ~ . Bb1 ~ ~ Bb1 . F2_.9 F2_.9 F2_.9 F2_.9 . F2_.9 F2_.9 F2_.9 F2_.9"
+    },
+    {
+      "velocity": 0.9,
+      "instrument": "synth",
+      "m": "~ ~ F3,Bb3,D3 ~ . ~ ~ F3,Bb3,D3 ~ . ~ ~ F3,Ab3,C3 ~ . ~ ~ F3,Ab3,C3 ~"
+    },
+    {
+      "instrument": "drums",
+      "p": ["bd . ~", "hh hh . hh hh . hh hh . hh hh", "~ ~ sd ~ | ~ ~ sd ~"]
+    }
+  ],
+  "symbols": {
+    "m": [" | ", " . ", " "],
+    "p": [","],
+    "hierarchy": ["m", "p"],
+    "length": "_",
+    "duration": "*",
+    "rest": "~",
+    "trim": false
+  }
+}

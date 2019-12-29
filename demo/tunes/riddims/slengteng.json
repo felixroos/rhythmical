@@ -1,0 +1,32 @@
+{
+  "duration": 3,
+  "p": [
+    {
+      "velocity": 0.7,
+      "instrument": "square",
+      "m": "Db2 D2 D2 D2 . Db2 D2 D2 D2 . Db2 D2 D2 D2 . G2_.5 F#2_.5"
+    },
+    {
+      "velocity": 0.9,
+      "instrument": "synth",
+      "m": "~ ~ D3,F#3,A3 ~ . ~ ~ D3,F#3,A3 ~ . ~ ~ D3,F#3,A3 ~ . ~ ~ C3,E3,G3 ~"
+    },
+    {
+      "instrument": "drums",
+      "p": [
+        "bd ~ ~ bd . bd",
+        "hh hh . hh hh . hh hh . hh hh",
+        "~ ~ sd ~ | ~ ~ sd ~"
+      ]
+    }
+  ],
+  "symbols": {
+    "m": [" | "," . "," "],
+    "p": [","],
+    "hierarchy": ["m","p"],
+    "length": "_",
+    "duration": "*",
+    "rest": "~",
+    "trim": false
+  }
+}

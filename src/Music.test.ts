@@ -1,4 +1,5 @@
-import { unify, toObject, toArray, render } from '../src/Music';
+import { unify, toObject, toArray } from '../src/Music';
+
 test('toObject', () => {
   expect(toObject('')).toEqual({ m: '' });
   expect(toObject('C')).toEqual({ m: 'C' });
@@ -19,6 +20,8 @@ test('unify', () => {
   expect(unify({ p: ['C', 'D'] })).toEqual({ p: ['C', 'D'] });
 });
 
+
+/*
 test('render', () => {
   expect(render('')).toEqual([]);
   expect(render('C')).toEqual([
@@ -101,4 +104,4 @@ test.only('cantaloupe', () => {
       [3.5, "F", 0.5]
     ]
     );
-});
+}); */

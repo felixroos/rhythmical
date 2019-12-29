@@ -13,6 +13,7 @@ import * as smwSoundbank from './samples/smw/soundbank.js';
 import { section } from './section';
 import { sampler } from './sampler';
 import { drumsounds } from './samples/drumset.js';
+import tidalsounds from './samples/tidal/tidal.js';
 import { rack } from './rack';
 
 declare const ace: any;
@@ -21,7 +22,7 @@ window.onload = () => {
 
   const exampleKeys = Object.keys(examples);
   /* let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]]; */
-  let json = examples.dub1;
+  let json = examples.zeldasRescueBrackets;
   const flip = false;
 
 
@@ -58,9 +59,9 @@ window.onload = () => {
     cello: section(16, smwSoundbank._04, { root: 'D4', loop: true }), // 64
     trumpet: section(16, smwSoundbank._08, { root: 'D4', loop: true }),
     uprightPiano: section(16, smwSoundbank._0a, { root: 'G3', loop: false }), // zu tief
-    snare: section(16, smwSoundbank._0b, { root: 'D4', loop: false }),
+    /* snare: section(16, smwSoundbank._0b, { root: 'D4', loop: false }),
     kick: section(16, smwSoundbank._0f, { root: 'D4', loop: false }),
-    hihat: section(16, smwSoundbank._06, { root: 'D4', loop: false }),
+    hihat: section(16, smwSoundbank._06, { root: 'D4', loop: false }), */
     bongo: section(16, smwSoundbank._10, { root: 'D4', loop: false }),
     hit: section(16, smwSoundbank._12, { root: 'D4', loop: false }),
     clap: section(16, smwSoundbank._13, { root: 'D4', loop: false }),
@@ -73,6 +74,7 @@ window.onload = () => {
     steelGuitar: section(16, smwSoundbank._07, { root: 'D3', loop: false }), // 2800
     steelDrum: section(16, smwSoundbank._09, { root: 'F4', loop: false }), //5536
     distortedGuitar: section(16, smwSoundbank._11, { root: 'G#3', loop: false }), //2304
+    smwDrums: rack({ sd: smwSoundbank._0b, bd: smwSoundbank._0f, hh: smwSoundbank._06 }).connect(reverb)
   }
 
   const instruments = {
@@ -113,6 +115,7 @@ window.onload = () => {
     harp: sampler(harpSamples, { transpose: -24 }).connect(reverb),
     piano: sampler(pianoSamples).connect(reverb),
     drums: rack(drumsounds).connect(reverb),
+    tidal: rack(tidalsounds).connect(reverb),
     ...(Object.keys(smw).reduce((i, k) => ({ ...i, [k]: smw[k].connect(reverb) }), {}))
   }
 
@@ -150,7 +153,7 @@ window.onload = () => {
     }
     Player.play(rendered, {
       instruments,
-      customSymbols: Object.keys(drumsounds),
+      customSymbols: Object.keys({ ...drumsounds, ...tidalsounds }),
       draw: (time) => Viz.updatePianoRoll(viz, time)
     });
   }
@@ -194,7 +197,7 @@ window.onload = () => {
             value: prettyOutput
           });
         }
-        outputeditor.setValue(Editor.prettyJson(prettyOutput), -1);
+        outputeditor.setValue(Editor.prettyJson(prettyOutput, true), -1);
       } catch (e) {
         console.warn('invalid json');
       }

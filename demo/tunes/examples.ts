@@ -6,12 +6,20 @@ import entchenAbsolute from './entchen-absolute.json';
 import timeOfTheFallingRain from './time-of-the-falling-rain.json';
 import zeldasRescue from './zelda-rescue.json';
 import zeldasRescueVerbose from './zelda-rescue-intro.json';
+import zeldasRescueBrackets from './zeldas-rescue-brackets.json
 import vanillaDome from './vanilla-dome.json';
 import dub1 from './dub1.json';
+import slengTeng from './riddims/slengteng.json';
+import realRock from './riddims/realrock.json';
+import tidal from './tidal.json';
 
 export const examples = {
+  tidal,
+  realRock,
+  zeldasRescueBrackets,
   /* vanillaDome, */
   zeldasRescue,
+  slengTeng,
   zeldasRescueVerbose,
   timeOfTheFallingRain,
   swimming,

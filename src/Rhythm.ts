@@ -583,7 +583,7 @@ export class Rhythm {
             {
               value: item,
               path: path.concat([[i, duration, item['duration'] || 1]]),
-              props
+              /* props */
               /* path: path.concat([[index, rhythm.length]]), */
             }
           ]);

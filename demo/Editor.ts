@@ -17,11 +17,11 @@ export class Editor {
     return editor;
   }
 
-  static prettyJson(json) {
-    return JSON.stringify(
+  static prettyJson(json, compact = false) {
+    const string = JSON.stringify(
       json,
       function (k, v) {
-        if (
+        if (compact &&
           Array.isArray(v) &&
           v.reduce(
             (d, e) => {
@@ -31,16 +31,20 @@ export class Editor {
             },
             { allStrings: true, chars: 0, valid: true }
           ).valid
-        )
+        ) {
           return JSON.stringify(v);
+        }
         return v;
       },
       2
     )
-      .replace(/\\/g, '')
-      .replace(/\"\[/g, '[')
-      .replace(/\]\"/g, ']')
-      .replace(/\"\{/g, '{')
-      .replace(/\}\"/g, '}');
+    if (compact) {
+      return string.replace(/\\/g, '')
+        .replace(/\"\[/g, '[')
+        .replace(/\]\"/g, ']')
+        .replace(/\"\{/g, '{')
+        .replace(/\}\"/g, '}');
+    }
+    return string;
   }
 }
