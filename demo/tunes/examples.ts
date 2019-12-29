@@ -6,7 +6,7 @@ import entchenAbsolute from './entchen-absolute.json';
 import timeOfTheFallingRain from './time-of-the-falling-rain.json';
 import zeldasRescue from './zelda-rescue.json';
 import zeldasRescueVerbose from './zelda-rescue-intro.json';
-import zeldasRescueBrackets from './zeldas-rescue-brackets.json
+import zeldasRescueBrackets from './zeldas-rescue-brackets.json';
 import vanillaDome from './vanilla-dome.json';
 import dub1 from './dub1.json';
 import slengTeng from './riddims/slengteng.json';
@@ -55,27 +55,52 @@ export const examples = {
       "C3",
     ]
   },
-  entchenShortest: {
+  entchenSlashes: {
     "duration": 10,
     "m": "C3 D3 E3 F3/G3 G3/A3 A3 A3 A3/G3/A3 A3 A3 A3/G3/F3 F3 F3 F3/E3 E3/D3 D3 D3 D3/C3"
   },
+  entchenBrackets: {
+    "duration": 10,
+    "m": "[C3 D3 E3 F3] [G3 G3] [A3 A3 A3 A3] G3 [A3 A3 A3 A3] G3 [F3 F3 F3 F3] [E3 E3] [D3 D3 D3 D3] C3"
+  },
+  entchenFeet: {
+    "duration": 10,
+    "m": "C3 D3 E3 F3 . G3 G3 . A3 A3 A3 A3 . G3 . A3 A3 A3 A3 . G3 . F3 F3 F3 F3 . E3 E3 . D3 D3 D3 D3 . C3"
+  },
   bolero: {
-    duration: 9,
+    instrument: "tidal",
+    duration: 6.75,
     m: [
       [
-        ['C4', 'G3 G3 G3'],
-        ['C4', 'G3 G3 G3'],
-        ['C4', 'G3']
+        ['ht', 'mt mt mt'],
+        ['ht', 'mt mt mt'],
+        ['ht', 'mt']
       ],
 
       [
-        ['C4', 'G3 G3 G3'],
-        ['C4', 'G3 G3 G3'],
-        ['C4 C4 C4', 'G3 G3 G3']
+        ['ht', 'mt mt mt'],
+        ['ht', 'mt mt mt'],
+        ['ht ht ht', 'mt mt mt']
       ]
     ]
   },
+  boleroBrackets: {
+    instrument: "tidal",
+    duration: 6.75,
+    m: '[[ht [mt mt mt]] [ht [mt mt mt]] [ht mt]] [[ht [mt mt mt]] [ht [mt mt mt]] [[ht ht ht] [mt mt mt]]]'
+  },
+  boleroFeet: {
+    instrument: "tidal",
+    duration: 6.75,
+    m: '[ht [mt mt mt]] [ht [mt mt mt]] [ht mt] . [ht [mt mt mt]] [ht [mt mt mt]] [[ht ht ht] [mt mt mt]]'
+  },
+  boleroFeet2: {
+    instrument: "tidal",
+    duration: 6.75,
+    m: 'ht [mt mt mt] . ht [mt mt mt] . ht mt | ht [mt mt mt] . ht [mt mt mt] . [ht ht ht] [mt mt mt]'
+  },
   pumuckel: {
+    instrument: "piano",
     duration: 8,
     m: [
       [{ m: 'A3', duration: 3 }, 'F#3'],
@@ -87,6 +112,25 @@ export const examples = {
       ['A3', 'G3', 'G3', 'C#3'],
       [{ m: 'D3', duration: 3 }, 'F#3']
     ]
+  },
+  pumuckelShort: {
+    instrument: "piano",
+    duration: 8,
+    m: [
+      ['A3*3', 'F#3'],
+      ['A3*3', 'F#3'],
+      ['A3', 'G3', 'G3', 'E3'],
+      ['B3', 'A3', 'A3', 'F#3'],
+      ['A3*3', 'F#3'],
+      ['A3*3', 'F#3'],
+      ['A3', 'G3', 'G3', 'C#3'],
+      ['D3*3', 'F#3']
+    ]
+  },
+  pumuckelBrackets: {
+    instrument: "piano",
+    duration: 8,
+    m: `[A3*3 F#3] [A3*3 F#3] [A3 G3 G3 E3] [B3 A3 A3 F#3] [A3*3 F#3] [A3*3 F#3] [A3 G3 G3 C#3] [D3*3 F#3]`
   },
   funkytown: {
     duration: 4,
@@ -113,9 +157,47 @@ export const examples = {
       'C5 /C5 /Bb4 /C5 ', '/G4 |/G4 ', 'C5 /F5 /E5 /C5 ', ''
     ]
   },
+  funkytownBrackets: {
+    duration: 4,
+    m: "[[C5 r] [C5 r] [Bb4 r] [C5 r]] [r [G4 r] r [G4 r]] [[C5 r] [F5 r] [E5 r] [C5 r]] r"
+  },
+  funkytownBracketsFeet1: {
+    duration: 4,
+    m: "[C5 r] [C5 r] [Bb4 r] [C5 r] . r [G4 r] r [G4 r] . [C5 r] [F5 r] [E5 r] [C5 r] . r"
+  },
+  funkytownBracketsFeet2: {
+    duration: 4,
+    m: "C5 r . C5 r . Bb4 r . C5 r | r . G4 r . r . G4 r | C5 r . F5 r . E5 r . C5 r | r"
+  },
   funkytownLengths: {
     duration: 4,
-    m: 'C5_.5 C5_.5 Bb4_.5 C5_.5| G4_.5/ G4_.5|C5_.5 F5_.5 E5_.5 C5_.5|'
+    m: [
+      [
+        { m: 'C5', length: 0.5 },
+        { m: 'C5', length: 0.5 },
+        { m: 'Bb4', length: 0.5 },
+        { m: 'C5', length: 0.5 }
+      ],
+      ['r',
+        { m: 'G4', length: 0.5 },
+        'r',
+        { m: 'G4', length: 0.5 }],
+      [
+        { m: 'C5', length: 0.5 },
+        { m: 'F5', length: 0.5 },
+        { m: 'E5', length: 0.5 },
+        { m: 'C5', length: 0.5 }
+      ],
+      'r'
+    ]
+  },
+  funkytownLengthsBrackets: {
+    duration: 4,
+    m: "[C5_.5 C5_.5 Bb4_.5 C5_.5] [r G4_.5 r G4_.5] [C5_.5 F5_.5 E5_.5 C5_.5] r"
+  },
+  funkytownLengthsFeet: {
+    "duration": 4,
+    "m": "C5_.5 C5_.5 Bb4_.5 C5_.5 . r G4_.5 r G4_.5 . C5_.5 F5_.5 E5_.5 C5_.5 . r"
   },
   funkytownPoly: {
     duration: 4,
@@ -146,6 +228,13 @@ export const examples = {
           ['C2', 'C3', 'C2', 'C3']
         ]
       }
+    ]
+  },
+  funkytownPolyShort: {
+    duration: 4,
+    p: [
+      "C5_.5 C5_.5 Bb4_.5 C5_.5 . r G4_.5 r G4_.5 . C5_.5 F5_.5 E5_.5 C5_.5 . r",
+      'C2 C3 C2 C3 . C2 C3 C2 C3 . C2 C3 C2 C3 . C2 C3 C2 C3'
     ]
   },
   funkytownPolyB: {
@@ -266,6 +355,13 @@ export const examples = {
       }
     ]
   },
+  funkytownPolyCShort: {
+    duration: 8,
+    p: [
+      'D5,B4 D5,B4 D5,B4 D5,B4 . C5,A4 C5,A4 C5,A4 C5,A4 . B4,G4 B4,G4 B4,G4 B4,G4 . A4,F4 A4,F4 A4,F4 G4,D4 . G4_.5 G4_.5 F4_.5 G4_.5 . r D4_.5 r D4_.5 . G4_.5 C5_.5 B4_.5 G4_.5 . r',
+      'G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3 . G2 G3 G2 G3'
+    ]
+  },
   triplets: {
     duration: 4,
     p: [
@@ -288,14 +384,8 @@ export const examples = {
   tripletsShort: {
     duration: 4,
     p: [
-      {
-        voice: 'melody',
-        m: ['E4 C4 E4 C5', 'A4 F4 G4']
-      },
-      {
-        voice: 'bass',
-        m: ['C4 G3 C4 G3', 'F3/C3/F3/C3 G3']
-      }
+      "E4 C4 E4 C5 | A4 F4 G4",
+      "[C4 G3 C4 G3] [F3 C3 F3 [C3 G3]]"
     ]
   },
   quartuplets: {
@@ -320,14 +410,8 @@ export const examples = {
   quartupletsShort: {
     "duration": 4,
     "p": [
-      {
-        "voice": "melody",
-        "m": ["E4 C4 E4 C5", "A4 F4 G4"]
-      },
-      {
-        "voice": "bass",
-        "m": ["C4 G3 C4", "F3/C3/F3 G3"]
-      }
+      "E4 C4 E4 C5 | A4 F4 G4",
+      "[C4 G3 C4] [F3 C3 [F3 G3]]"
     ]
   },
   timeChange: {
@@ -538,16 +622,7 @@ export const examples = {
   lengthShort: {
     duration: 8,
     p: [
-      [
-        "C4_8 E4_6 G4_4 B4_2",
-        "",
-        "A3_8 C4_6 E4_4 G4_2",
-        "",
-        "D4_8 F4_6 A4_4 C5_2",
-        "",
-        "G3_8 B3_6 D4_4 F4_2",
-        ""
-      ],
+      "C4_8 E4_6 G4_4 B4_2 . r . A3_8 C4_6 E4_4 G4_2 . r . D4_8 F4_6 A4_4 C5_2 . r . G3_8 B3_6 D4_4 F4_2 . r",
       'C3 A2 D3 G2'
     ]
   },
@@ -585,6 +660,7 @@ export const examples = {
     duration: 24,
     p: [
       {
+        instrument: "harp",
         m: [
           ['', ['E4', 'F4', 'G4', { m: 'D4', length: 7 }]],
           [],
@@ -617,6 +693,7 @@ export const examples = {
         ]
       },
       {
+        instrument: "piano",
         m: [
           { p: ['E3', 'G3'] },
           { p: ['F3', 'Bb3'] },
@@ -637,6 +714,7 @@ export const examples = {
         ]
       },
       {
+        instrument: "harp",
         m: [
           ['C2'],
           ['G2'],
@@ -796,7 +874,7 @@ export const examples = {
   },
   instruments: {
     "m": "A4",
-    "instrument": "synth"
+    instrument: "synth"
   },
   dub1
 };

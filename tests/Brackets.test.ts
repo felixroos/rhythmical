@@ -48,15 +48,15 @@ test.only('parse', () => {
   expect(Brackets.parse('[C D][E F]')).toEqual([['C', 'D'], ['E', 'F']]);
   expect(Brackets.parse('[C D] [E F]')).toEqual([['C', 'D'], ['E', 'F']]);
   expect(Brackets.parse('[C D]   [E F]')).toEqual([['C', 'D'], ['E', 'F']]);
-// [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] [D4*2 [C4 B3]] [A3] [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] D5*2 [D5*2 [C5 B4]] [[C5 B4] G4*2]
+  // [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] [D4*2 [C4 B3]] [A3] [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] D5*2 [D5*2 [C5 B4]] [[C5 B4] G4*2]
   expect(Brackets.parse('[B3*2 D4] [A3*2 [G3 A3]]')).toEqual([['B3*2', 'D4'], ['A3*2', ['G3', 'A3']]]);
   expect(Brackets.parse('[B3*2 D4] [A3] [B3*2 D4] [A4*2 G4]')).toEqual([['B3*2', 'D4'], ['A3'], ['B3*2', 'D4'], ['A4*2', 'G4']]);
   expect(Brackets.parse('[D4*2 [C4 B3]] [A3] [B3*2 D4] [A3*2 [G3 A3]]')).toEqual([['D4*2', ['C4', 'B3']], ['A3'], ['B3*2', 'D4'], ['A3*2', ['G3', 'A3']]]);
   expect(Brackets.parse('[B3*2 D4] [A3] [B3*2 D4] [A4*2 G4]')).toEqual([['D4*2', ['C4', 'B3']], ['A3'], ['B3*2', 'D4'], ['A3*2', ['G3', 'A3']]]);
   expect(Brackets.parse('D5*2 [D5*2 [C5 B4]] [[C5 B4] G4*2]')).toEqual(['D5*2', ['D5*2', ['C5', 'B4']], ['C5', 'B4', 'G4*2']]);
   expect(Brackets.parse('[C5*2 [B4 A4]] [[B4 A4] E4*2] [D5*2 [C5 B4]] [[C5 B4] G4 C5] [G5_1.66] [~ ~ B3]')).toEqual(['D5*2', ['D5*2', ['C5', 'B4']], ['C5', 'B4', 'G4*2']]);
-  /* expect(Brackets.parse('[C5*2 [B4 A4]] [[B4 A4] E4*2] [D5*2 [C5 B4]] [[C5 B4] G4 C5] [G5_1.66] [//B3]')).toEqual([['C3', 'D3'], [['E3', ['F3', 'G3']]]]); */
-  /* expect(Brackets.parse('[B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] [D4*2 [C4 B3]] [A3] [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] D5*2 [D5*2 [C5 B4]] [C5 B4 G4*2] [C5*2 [B4 A4]] [[B4 A4] E4*2] [D5*2 [C5 B4]] [[C5 B4] G4 C5] [G5_1.66] [//B3]')).toEqual([['C3', 'D3'], [['E3', ['F3', 'G3']]]]); */
+
+  // TBD fix: ht [mt mt mt] . ht [mt mt mt] . ht mt | ht [mt mt mt] . ht [mt mt mt] . [ht ht ht] [mt mt mt]
 
 })
 

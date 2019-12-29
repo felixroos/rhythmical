@@ -125,7 +125,7 @@ export function eventDuration(e, standard = 1) {
 }
 
 export function resolveStringSymbols(event, symbols = {
-  m: ['|', ' ', '/'],
+  m: [' | ', ' . ', ' '],
   p: [','],
   hierarchy: ['m', 'p'],
   length: '_',
@@ -134,6 +134,7 @@ export function resolveStringSymbols(event, symbols = {
 }) {
   if (typeof event === 'string' && event.includes('[')) {
     event = Brackets.parse(event);
+    // TBD fix: ht [mt mt mt] . ht [mt mt mt] . ht mt | ht [mt mt mt] . ht [mt mt mt] . [ht ht ht] [mt mt mt]
   }
   if (typeof event === 'string' && symbols.hierarchy) {
     symbols.hierarchy.forEach(type => {
