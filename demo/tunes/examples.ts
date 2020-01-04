@@ -15,6 +15,161 @@ import realRock from './riddims/realrock.json';
 import tidal from './tidal.json';
 
 export const examples = {
+  transpose: {
+    "transpose": 12,
+    "m": "C3 D3 E3"
+  },
+  majorsteps: {
+    "let": {
+      "a": "3,5,8"
+    },
+    "duration": 12,
+    "instrument": "piano",
+    "scale": "C major",
+    "m": [
+      {
+        "m": "#a",
+        "transpose": 0
+      },
+      {
+        "m": "#a",
+        "transpose": 1
+      },
+      {
+        "m": "#a",
+        "transpose": 2
+      },
+      {
+        "m": "#a",
+        "transpose": 3
+      },
+      {
+        "m": "#a",
+        "transpose": 4
+      },
+      {
+        "m": "#a",
+        "transpose": 5
+      },
+      {
+        "m": "#a",
+        "transpose": 6
+      },
+      {
+        "m": "#a",
+        "transpose": 7,
+        "duration": 3
+      }
+    ]
+  },
+  stepchords: {
+    "let": {
+      "a": "1,3,5,7"
+    },
+    "duration": 12,
+    "instrument": "piano",
+    "scale": "C bebop major",
+    "m": [
+      {
+        "m": "#a",
+        "transpose": 0
+      },
+      {
+        "m": "#a",
+        "transpose": 1
+      },
+      {
+        "m": "#a",
+        "transpose": 2
+      },
+      {
+        "m": "#a",
+        "transpose": 3
+      },
+      {
+        "m": "#a",
+        "transpose": 4
+      },
+      {
+        "m": "#a",
+        "transpose": 5
+      },
+      {
+        "m": "#a",
+        "transpose": 6
+      },
+      {
+        "m": "#a",
+        "transpose": 7
+      },
+      {
+        "m": "#a",
+        "transpose": 8,
+        "duration": 3
+      }
+    ]
+  },
+  stepchordsAssigned: {
+    "let": {
+      "a": "3,5,8"
+    },
+    "duration": 13.5,
+    "instrument": "piano",
+    "scale": "Eb3 major",
+    "assign": {
+      "transpose": [0, 1, 2, 3, 4, 5, 6, 7]
+    },
+    "m": ["#a", "#a", "#a", "#a", "#a", "#a", "#a", "#a*2"]
+  },
+  ragasteps: {
+    "let": {
+      "a": {
+        "p": ["1", "3", "5"],
+        "m": ["8"]
+      }
+    },
+    "duration": 18,
+    "instrument": "piano",
+    "scale": "C3 purvi raga",
+    "assign": {
+      "transpose": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    },
+    "m": ["#a", "#a", "#a", "#a", "#a", "#a", "#a", "#a", "#a"]
+  },
+  bruderjakob: {
+    "duration": 32,
+    "let": {
+      "a": "C3 D3 E3 C3",
+      "b": "E3 F3 G3*2",
+      "c": "G3 A3 . G3 F3 . E3 . C3",
+      "d": "C3 G2 C3*2"
+    },
+    "m": [
+      {
+        "p": [
+          "#a #a #b #b #c #c #d #d",
+          "~*2 #a #a #b #b #c #c",
+          "~*4 #a #a #b #b",
+          "~*6 #a #a"
+        ]
+      },
+      {
+        "p": [
+          "#a #a #b #b #c #c #d #d",
+          "#d #d #a #a #b #b #c #c",
+          "#c #c #d #d #a #a #b #b",
+          "#b #b #c #c #d #d #a #a"
+        ]
+      },
+      {
+        "p": [
+          "#d #d ~*6",
+          "#c #c #d #d ~*4",
+          "#b #b #c #c #d #d ~*2"
+        ]
+      }
+    ]
+  },
   tidal,
   realRock,
   zeldasRescueBrackets,

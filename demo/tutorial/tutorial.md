@@ -36,7 +36,7 @@ Ok, here are some Demos:
 <button id="example-swimming">Super Mario World - Swimming Theme</button>  
 <button id="example-cantaloupe">Herbie Hancock- Cantaloupe Island</button>  
 <button id="example-starworld">Super Mario World - Star World Theme</button>
-<button id="example-zeldasRescue">A Link To The Past - Princess Zeldas Rescue</button>
+<button id="example-zeldasRescueBrackets">A Link To The Past - Princess Zeldas Rescue</button>
 <button id="example-slengTeng">Sleng Teng Riddim</button>
 <button id="example-realRock">Real Rock Riddim</button>
 

@@ -21,6 +21,9 @@ export interface Song extends MusicObject<string> {
   p: Music<string>[];
 }
 
+export declare type TransformParams<T> = { block: MusicObject<T>, props: Object };
+export declare type Transform<T> = (params: TransformParams<T>) => TransformParams<T>;
+
 export const params = {
   monophony: 'm',
   polyphony: 'p',
@@ -55,7 +58,7 @@ export function unify<T>(music: Music<T>): MusicObject<T> {
 }
 
 
-export function render2(music: Music<string>, verbose = false) {
+export function render2(music: Music<string>, transform?: Transform<string>) {
   const length = eventDuration(music);
 
   /* const length =
@@ -65,9 +68,9 @@ export function render2(music: Music<string>, verbose = false) {
 
   // The top level duration is special: it has no relational use => only one element at top
   // => find way to use array notation with top level duration
-  let flat = flat2(music);
+  let flat = flat2(music, {}, transform);
 
-  const p = flat.map(calculate2(length, verbose))/* .map(e => {
+  const p = flat.map(calculate2(length, false))/* .map(e => {
     const offset = Math.random() * error;
     return {
       ...e,
@@ -160,30 +163,34 @@ export function resolveStringSymbols(event, symbols = {
   return event;
 }
 
-export function flat2(music: Music<string>, props: any = {}) {
-  const block = unify<string>(music);
+export function flat2(music: Music<string>, props: any = {}, transform?: Transform<string>) {
+  let block = unify<string>(music);
+
+  if (transform) {
+    const transformed = transform({ block, props });
+    block = transformed.block;
+    props = transformed.props;
+  }
   // TBD find way to use array duration notation with root of object
   // drill props
   props = {
     ...props,
     length: (block.length || 1) * (props.length || 1), // TBD use elvis ?? operator
     velocity: (props.velocity === undefined ? 1 : props.velocity) * (block.velocity === undefined ? 1 : block.velocity), // TBD use elvis ?? operator
-    instrument: block['instrument'] || props.instrument,
-    symbols: music['symbols'] || props.symbols
+    instrument: block['instrument'] || props.instrument
     //names: (props.names || []).concat(block.name ? [block.name] : []), // TBD use elvis ?? operator
     //voices: (props.voices || []).concat(block['voice'] ? [block['voice']] : []), // TBD use elvis ?? operator
   }; // TBD remember which velocity was on which level? maybe map simplePath:velocity, same for length
-
   // those props are merged into the rendered events / blocks (together with path)
   const eventProps = {
     velocity: props.velocity,
     instrument: props.instrument,
     length: props.length,
   };
-
-  const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e, props.symbols));
-  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e, props.symbols));
-
+  /* const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e, props.symbols));
+  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e, props.symbols)); */
+  const m = (block[params.monophony] || []);
+  const p = (block[params.polyphony] || []);
   const mDuration = m.reduce((total, e) => total + eventDuration(e), 0);
   const pDuration = p.reduce((max, e) => Math.max(max, eventDuration(e)), 0);
   // const pDuration = /* block.duration || */ 1;
@@ -210,7 +217,7 @@ export function flat2(music: Music<string>, props: any = {}) {
         time: state.time + eDuration,
         events: state.events.concat(
           typeof event === 'object' // is object? => go deeper, is primitve => stop
-            ? flat2(event, { ...props, path })
+            ? flat2(event, { ...props, path }, transform)
             : [
               {
                 [params.monophony]: event,

@@ -1,5 +1,5 @@
 
-import { Distance, Interval } from 'tonal';
+import { Distance, Interval, Note } from 'tonal';
 import Tone from 'tone';
 
 export function sampler(samples, options = {}) {
@@ -10,7 +10,7 @@ export function sampler(samples, options = {}) {
       if (options['transpose']) {
         note = Distance.transpose(note, Interval.fromSemitones(options['transpose']));
       }
-      sampler.triggerAttackRelease(note, duration, velocity);
+      sampler.triggerAttackRelease(Note.simplify(note), duration, velocity);
     },
     connect: (dest) => { sampler.connect(dest); return s },
     toMaster: () => { sampler.toMaster(); return s },

@@ -85,11 +85,11 @@ export class Brackets {
         /* .split(' [').join('",[') */
         .replace(/([\w\d]+)\s*\[/g, '$1",[')
         /* .split('] ').join('],"') */
-        .replace(/\]\s*([\w\d]+)/g, '],"$1')
+        .replace(/\]\s*([\w\d#]+)/g, '],"$1')
         .replace(/\]\s*\[/g, '],[')
         .split(' ').join('","')
       }]`
-      .replace(/\[([\w\d]+)/g, '["$1')
+      .replace(/\[([\w\d#]+)/g, '["$1')
       .replace(/([\w\d]+)\]/g, '$1"]')
       .replace(/\]"\]$/, ']').replace(/^\["\[/, '[');
 
