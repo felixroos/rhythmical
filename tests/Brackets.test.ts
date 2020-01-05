@@ -48,6 +48,7 @@ test('parse', () => {
   expect(Brackets.parse('[C D][E F]')).toEqual([['C', 'D'], ['E', 'F']]);
   expect(Brackets.parse('[C D] [E F]')).toEqual([['C', 'D'], ['E', 'F']]);
   expect(Brackets.parse('[C D]   [E F]')).toEqual([['C', 'D'], ['E', 'F']]);
+  /* expect(Brackets.parse('C D . E F')).toEqual([['C', 'D'], ['E', 'F']]); */
   expect(Brackets.parse('#a [#a #a]')).toEqual(['#a', ['#a', '#a']]);
   // [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] [D4*2 [C4 B3]] [A3] [B3*2 D4] [A3*2 [G3 A3]] [B3*2 D4] [A3] [B3*2 D4] [A4*2 G4] D5*2 [D5*2 [C5 B4]] [[C5 B4] G4*2]
   expect(Brackets.parse('[B3*2 D4] [A3*2 [G3 A3]]')).toEqual([['B3*2', 'D4'], ['A3*2', ['G3', 'A3']]]);

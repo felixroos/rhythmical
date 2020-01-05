@@ -117,13 +117,13 @@ export class Viz {
         } */
       }
       const rect = document.createElementNS(ns, "rect");
-
+      const radius = Math.floor(/* Math.min( */ppp / 2/* , 40) */);
       rect.setAttribute("width", Math.round(width * 2) / 2 + 'px');
       rect.setAttribute("height", Math.round(height * 2) / 2 + 'px');
       rect.setAttribute("x", Math.round(x * 2) / 2 + 'px');
       rect.setAttribute("y", Math.round(y * 2) / 2 + 'px');
-      rect.setAttribute("rx", Math.floor(ppp / 2) + 'px');
-      rect.setAttribute("ry", Math.floor(ppp / 2) + 'px');
+      rect.setAttribute("rx", radius + 'px');
+      rect.setAttribute("ry", radius + 'px');
       /* rect.setAttribute("z-index", (!event.block ? levels : event.path.length) + ''); */
       rect.setAttribute("fill", fill);
       rect.setAttribute("style", `stroke: ${stroke}; stroke-width: ${!!event.block ? 1 : 1}px;z-index:${(!event.block ? levels : event.path.length)}`);

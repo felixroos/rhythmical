@@ -1,5 +1,5 @@
 import Tone from 'tone';
-import { render2, Music, params, Transform, TransformParams, resolveStringSymbols, MusicObject, unify } from '../src/Music';
+import { render2 } from '../src/Music';
 import { examples } from './tunes/examples';
 import { Editor } from './Editor';
 import { Player } from './Player';
@@ -15,7 +15,7 @@ import { sampler } from './sampler';
 import { drumsounds } from './samples/drumset.js';
 import tidalsounds from './samples/tidal/tidal.js';
 import { rack } from './rack';
-import { Note, Distance, Interval, Scale } from 'tonal';
+import { Transforms, transforms } from './transforms';
 
 /* import * as yaml from 'js-yaml'; */
 declare const ace: any;
@@ -24,7 +24,7 @@ window.onload = () => {
 
   const exampleKeys = Object.keys(examples);
   /* let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]]; */
-  let json = examples.ragasteps;
+  let json = examples.assign;
   const flip = false;
 
 
@@ -121,126 +121,16 @@ window.onload = () => {
     ...(Object.keys(smw).reduce((i, k) => ({ ...i, [k]: smw[k].connect(reverb) }), {}))
   }
 
-  /** TRANSFORMS */
-
-  function mapEvents<T>(block: MusicObject<T>, fn: (event?: Music<T>, index?: number) => Music<T>) {
-    return {
-      ...block,
-      [params.monophony]: (block[params.monophony] || []).map(fn),
-      [params.polyphony]: (block[params.polyphony] || []).map(fn)
-    }
-  }
-  function letTransform({ block, props }: TransformParams<string>) {
-    let lets = block['let'] || {};
-    lets = Object.keys(lets).reduce((_lets, key) => {
-      return {
-        ..._lets,
-        [key]: resolveStringSymbols(lets[key], props['symbols'])
-      }
-    }, {})
-    props = {
-      ...props,
-      let: {
-        ...lets,
-        ...props['let']
-      }
-    };
-    block = mapEvents(block, (b) => {
-      if (typeof b === 'string' && b[0] === '#') {
-        return props['let'][b.replace('#', '')];
-      }
-      return b;
-    });
-    return { block, props };
-  }
-  function stringTransform({ block, props }) {
-    props = {
-      ...props,
-      symbols: block['symbols'] || props.symbols
-    }
-    block = mapEvents(block, e => resolveStringSymbols(e, props.symbols))
-    return { block, props };
-  }
-  function transposeTransform({ block, props }) {
-    if (block['transpose']) {
-      props = {
-        ...props,
-        transpose: block['transpose'] + (props['transpose'] || 0)
-      }
-    }
-    if (props.transpose) {
-      block = mapEvents(block, (e) => {
-        if (typeof e === 'string' && !isNaN(parseInt(e))) {
-          return (parseInt(e) + props.transpose) + '';
-        }
-        if (typeof e === 'string' && !!Note.midi(e)) {
-          return Note.simplify(<string>Distance.transpose(e, Interval.fromSemitones(props.transpose)));
-        }
-        return e;
-      });
-    }
-    return { props, block };
-  }
-  function scaleTransform({ block, props }) {
-    if (block['scale']) {
-      props = {
-        ...props,
-        scale: block['scale']
-      }
-    }
-    if (props.scale) {
-      block = mapEvents(block, (e) => {
-        if (!['string', 'number'].includes(typeof e)) {
-          return e;
-        }
-        if (typeof e === 'string' && !isNaN(parseInt(e))) {
-          e = parseInt(e);
-        }
-        if (typeof e === 'number' && !isNaN(e) && e) {
-          const scale = props.scale.split(' ').slice(1).join(' ');
-          const intervals = Scale.intervals(scale);
-          const root = Note.props(props.scale.split(' ')[0]);
-          let octave = root.oct || 3;
-          const index = e - 1;
-          octave = Math.floor((index / intervals.length/*  + chroma / 12 */)) + octave;
-          return <string>Distance.transpose(root.pc + octave, intervals[index % intervals.length])
-        }
-        return e;
-      })
-    }
-    return { block, props };
-  }
-
-  function assignTransform<T>({ block, props }) {
-    if (block['assign']) {
-      block = mapEvents<T>(block, (e, i) => {
-        const toAssign = Object.keys(block['assign']).reduce((assign, prop) => {
-          const values = block['assign'][prop];
-          return {
-            ...assign,
-            [prop]: values[i % values.length]
-          }
-        }, {});
-        return {
-          ...unify(e),
-          ...toAssign
-        }
-      });
-    }
-    return { block, props };
-  }
-
-  function combineTransforms<T>(transforms: Transform<T>[]): Transform<T> {
-    return (params: TransformParams<T>) => transforms.reduce((transformed, transform) => transform(transformed), params);
-  };
 
   function renderJson(json, position = 0) {
-    const rendered = render2(json, combineTransforms([
-      stringTransform,
-      letTransform,
-      transposeTransform,
-      scaleTransform,
-      assignTransform
+    const rendered = render2(json, Transforms.combine([
+      transforms.string,
+      transforms.let,
+      transforms.transpose,
+      transforms.scale,
+      transforms.chords,
+      transforms.assign,
+      transforms.mirror
     ]));
     const prettyOutput = rendered.p.map(e =>
       e.path
@@ -291,7 +181,7 @@ window.onload = () => {
   document.getElementById('format').addEventListener('click', () => {
     try {
       json = JSON.parse(editor.getValue());
-      editor.setValue(Editor.prettyJson(json, true), -1);
+      editor.setValue(Editor.prettyJson(json), -1);
     } catch {
       console.warn('could not format: invalid json');
     }
@@ -303,6 +193,9 @@ window.onload = () => {
     mode: 'json',
     value: json,
     change: value => {
+      if (!value) {
+        return;
+      }
       // Get document, or throw exception on error
       /* try {
         const doc = yaml.safeLoad(value);
@@ -327,14 +220,16 @@ window.onload = () => {
         }
         outputeditor.setValue(Editor.prettyJson(prettyOutput, true), -1);
       } catch (e) {
-        console.warn('invalid json');
+        console.error('RenderError:', e);
+        /* console.log(value); */
+        /* console.log(prettyOutput); */
       }
     }
   });
   loadTune(json);
 
   function loadTune(json) {
-    editor.setValue(Editor.prettyJson(json, true), -1);
+    editor.setValue(Editor.prettyJson(json), -1);
     // autoplay?
     /* const { prettyOutput } = renderJson(json);
     outputeditor.setValue(Editor.prettyJson(prettyOutput), -1); */
@@ -343,7 +238,7 @@ window.onload = () => {
   Object.keys(examples).forEach(example => {
     const id = 'example-' + example;
     if (!document.getElementById(id)) {
-      console.log('unused example', id);
+      /* console.log('unused example', id); */
       return;
     }
     document.getElementById(id).addEventListener('click', () => {

@@ -1,4 +1,5 @@
 import { unify, toObject, toArray } from '../src/Music';
+import { resolveStringSymbols, resolveFeet } from '../demo/transforms';
 
 test('toObject', () => {
   expect(toObject('')).toEqual({ m: '' });
@@ -16,9 +17,19 @@ test('unify', () => {
   expect(unify('')).toEqual({ m: '' });
   expect(unify('C')).toEqual({ m: ['C'] });
   expect(unify({ m: 'C' })).toEqual({ m: ['C'] });
+  expect(unify({ m: ['C', 'D'] })).toEqual({ m: ['C', 'D'] });
   expect(unify(['C', 'D'])).toEqual({ m: ['C', 'D'] });
   expect(unify({ p: ['C', 'D'] })).toEqual({ p: ['C', 'D'] });
 });
+
+test.only('resolveStringSymbols', () => {
+  /* expect(resolveStringSymbols('C3')).toEqual('C3'); */
+  expect(resolveFeet('C3 . D3 F3')).toEqual(['C3', ['D3', 'F3']]);
+  expect(resolveFeet('C3 | D3 F3')).toEqual(['C3', ['D3', 'F3']]);
+  expect(resolveFeet('C3 | D3 . F3 A3')).toEqual(['C3', ['D3', ['F3', 'A3']]]);
+  expect(resolveFeet('C3 . D3 | F3 A3')).toEqual([['C3', 'D3'], ['F3', 'A3']]);
+  expect(resolveFeet('C3 E3 . D3 | F3 A3')).toEqual([[['C3', 'E3'], 'D3'], ['F3', 'A3']]);
+})
 
 
 /*

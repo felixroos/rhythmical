@@ -4,6 +4,7 @@ import cantaloupe from './cantaloupe-island.json';
 import starworld from './star-world.json';
 import entchen from './entchen-nested.json';
 import entchenAbsolute from './entchen-absolute.json';
+import entchenHarmonized from './entchen-harmonized.yml';
 import timeOfTheFallingRain from './time-of-the-falling-rain.json';
 import zeldasRescue from './zelda-rescue.json';
 import zeldasRescueVerbose from './zelda-rescue-intro.json';
@@ -15,6 +16,79 @@ import realRock from './riddims/realrock.json';
 import tidal from './tidal.json';
 
 export const examples = {
+  chords: {
+    "duration": 4,
+    "chords": [
+      "CM7",
+      "A7",
+      "Dm7",
+      "G7"
+    ],
+    "m": "C2 A2 D2 G2"
+  },
+  bebopChords2: {
+    "let": {
+      "a1": "A2,G3,C4,E4,G4",
+      "a2": "A2,G#3,C4,E4,G#4",
+      "a3": "A2,G3,C4,E4,A4",
+      "a4": "Ab2,F#3,C4,Eb4,B4"
+    },
+    "instrument": "piano",
+    "duration": 4,
+    "scale": "Db3 bebop major",
+    "m": [
+      ["#a2", "#a3", "#a4*2"]
+    ]
+  },
+  bebopChords: {
+    "let": {
+      "c": "1,5,8,11"
+    },
+    "instrument": "piano",
+    "duration": 16,
+    "scale": "Db3 bebop major",
+    "m": [
+      {
+        "assign": {
+          "transpose": [0, 1, 2, 3, 4, 5, 6, 7]
+        },
+        "m": ["#c", "#c", "#c", "#c", "#c", "#c", "#c", "#c"]
+      },
+      {
+        "assign": {
+          "transpose": [8, 7, 6, 5, 4, 3, 2, 1]
+        },
+        "m": ["#c", "#c", "#c", "#c", "#c", "#c", "#c", "#c"]
+      }
+    ]
+  },
+  contraryBebop: {
+    "let": {
+      "up": "1 2 3 4 5 6 7 8",
+      "down": "9 8 7 6 5 4 3 2"
+    },
+    "instrument": "piano",
+    "duration": 9,
+    "scale": "C3 bebop major",
+    "m": [
+      {
+        "assign": {
+          "transpose": [8, 0]
+        },
+        "p": ["#up", "#down"]
+      },
+      {
+        "assign": {
+          "transpose": [8, 0]
+        },
+        "p": ["#down", "#up"]
+      }
+    ]
+  },
+  mirror: {
+    "m": "C3 D3 E3 F3 G3 A3 B3 C4",
+    "mirror": "C3"
+  },
   transpose: {
     "transpose": 12,
     "m": "C3 D3 E3"
@@ -26,41 +100,10 @@ export const examples = {
     "duration": 12,
     "instrument": "piano",
     "scale": "C major",
-    "m": [
-      {
-        "m": "#a",
-        "transpose": 0
-      },
-      {
-        "m": "#a",
-        "transpose": 1
-      },
-      {
-        "m": "#a",
-        "transpose": 2
-      },
-      {
-        "m": "#a",
-        "transpose": 3
-      },
-      {
-        "m": "#a",
-        "transpose": 4
-      },
-      {
-        "m": "#a",
-        "transpose": 5
-      },
-      {
-        "m": "#a",
-        "transpose": 6
-      },
-      {
-        "m": "#a",
-        "transpose": 7,
-        "duration": 3
-      }
-    ]
+    "assign": {
+      "transpose": [0, 1, 2, 3, 4, 5, 6, 7]
+    },
+    "m": ["#a", "#a", "#a", "#a", "#a", "#a", "#a", "#a*3"]
   },
   stepchords: {
     "let": {
@@ -196,6 +239,17 @@ export const examples = {
   },
   entchen,
   entchenAbsolute,
+  entchenHarmonized,
+  assign: {
+    "duration": 4,
+    "assign": {
+      "duration": [
+        1,
+        2
+      ]
+    },
+    "m": "C2 A2 D2 G2"
+  },
   entchenShort: {
     "duration": 10,
     "m": [

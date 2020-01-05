@@ -94,13 +94,13 @@ a, h1, h2, h3, h4 {
   color: #b3da44;
   text-decoration: underline;
 }
-
+/* 
 #output:hover {
   z-index: 6;
-}
+} */
 
 #viz {
-  pointer-events: none;
+  /* pointer-events: none; */
   background: #2c2c27;
   opacity: 1;
   grid-column: 1;

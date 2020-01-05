@@ -58,7 +58,7 @@ export function unify<T>(music: Music<T>): MusicObject<T> {
 }
 
 
-export function render2(music: Music<string>, transform?: Transform<string>) {
+export function render2<T>(music: Music<T>, transform?: Transform<T>) {
   const length = eventDuration(music);
 
   /* const length =
@@ -127,44 +127,9 @@ export function eventDuration(e, standard = 1) {
   return e.duration || standard;
 }
 
-export function resolveStringSymbols(event, symbols = {
-  m: [' | ', ' . ', ' '],
-  p: [','],
-  hierarchy: ['m', 'p'],
-  length: '_',
-  duration: '*',
-  trim: false
-}) {
-  if (typeof event === 'string' && event.includes('[')) {
-    event = Brackets.parse(event);
-    // TBD fix: ht [mt mt mt] . ht [mt mt mt] . ht mt | ht [mt mt mt] . ht [mt mt mt] . [ht ht ht] [mt mt mt]
-  }
-  if (typeof event === 'string' && symbols.hierarchy) {
-    symbols.hierarchy.forEach(type => {
-      if (symbols[type] && typeof event === 'string') {
-        symbols[type].forEach(symbol => {
-          if (typeof event === 'string' && event.includes(symbol)) {
-            event = [{ [type]: event.split(symbol).filter(e => !symbols.trim || !!e) }];
-          }
-        })
-      }
-    })
-  }
-  if (typeof event !== 'string') {
-    return event;
-  }
-  if (symbols.length && event.includes(symbols.length)) {
-    const s = event.split(symbols.length);
-    event = { m: s[0], length: parseFloat(s[1]) };
-  } else if (symbols.duration && event.includes(symbols.duration)) {
-    const s = event.split(symbols.duration);
-    event = { m: s[0], duration: parseFloat(s[1]) };
-  }
-  return event;
-}
 
-export function flat2(music: Music<string>, props: any = {}, transform?: Transform<string>) {
-  let block = unify<string>(music);
+export function flat2<T>(music: Music<T>, props: any = {}, transform?: Transform<T>) {
+  let block = unify<T>(music);
 
   if (transform) {
     const transformed = transform({ block, props });
@@ -187,8 +152,6 @@ export function flat2(music: Music<string>, props: any = {}, transform?: Transfo
     instrument: props.instrument,
     length: props.length,
   };
-  /* const m = (block[params.monophony] || []).map(e => resolveStringSymbols(e, props.symbols));
-  const p = (block[params.polyphony] || []).map(e => resolveStringSymbols(e, props.symbols)); */
   const m = (block[params.monophony] || []);
   const p = (block[params.polyphony] || []);
   const mDuration = m.reduce((total, e) => total + eventDuration(e), 0);
@@ -199,8 +162,6 @@ export function flat2(music: Music<string>, props: any = {}, transform?: Transfo
   const stack = allEvents.reduce(
     (state, event, i) => {
       const isPoly = p.includes(event);
-      // event = resolveStringSymbols(event);
-
       const eDuration = eventDuration(event);
       // remember: dont drill path here
       const path = (props.path || []).concat([

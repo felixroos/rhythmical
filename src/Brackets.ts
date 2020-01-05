@@ -78,20 +78,32 @@ export class Brackets {
   }
 
   static parse(string) {
+    const symbol = '[\\w\\d#\\.\\|]';
+    const opening = '\\[';
+    const closing = '\\]';
+    const space = '\\s';
+    const spaceAfterOpening = new RegExp(`${opening}${space}+`, 'g');
+    const spaceBeforeClosing = new RegExp(`${space}+${closing}`, 'g');
+    const symbolsBeforeOpening = new RegExp(`(${symbol}+)${space}*${opening}`, 'g');
+    const symbolsAfterClosing = new RegExp(`${closing}${space}*(${symbol}+)`, 'g');
+    const spaceBetween = new RegExp(`${closing}${space}*${opening}`, 'g');
+    const symbolsAfterOpening = new RegExp(`${opening}(${symbol}+)`, 'g');
+    const symbolsBeforeClosing = new RegExp(`(${symbol}+)${closing}`, 'g');
+    const outerClosing = new RegExp(`${closing}"${closing}$`);
+    const outerOpening = new RegExp(`^${opening}"${opening}`);
     const toParse = `[${
       string
-        .replace(/\[\s+/g, '[') // trim spaces after opening brackets
-        .replace(/\s+\]/g, ']') // trim spaces before closing brackets
-        /* .split(' [').join('",[') */
-        .replace(/([\w\d]+)\s*\[/g, '$1",[')
-        /* .split('] ').join('],"') */
-        .replace(/\]\s*([\w\d#]+)/g, '],"$1')
-        .replace(/\]\s*\[/g, '],[')
+        .replace(spaceAfterOpening, '[') // trim spaces after opening brackets
+        .replace(spaceBeforeClosing, ']') // trim spaces before closing brackets
+        .replace(symbolsBeforeOpening, '$1",[')
+        .replace(symbolsAfterClosing, '],"$1')
+        .replace(spaceBetween, '],[')
         .split(' ').join('","')
       }]`
-      .replace(/\[([\w\d#]+)/g, '["$1')
-      .replace(/([\w\d]+)\]/g, '$1"]')
-      .replace(/\]"\]$/, ']').replace(/^\["\[/, '[');
+      .replace(symbolsAfterOpening, '["$1')
+      .replace(symbolsBeforeClosing, '$1"]')
+      .replace(outerClosing, ']')
+      .replace(outerOpening, '[');
 
 
     try {
