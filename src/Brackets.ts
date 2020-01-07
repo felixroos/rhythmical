@@ -1,6 +1,12 @@
 import { NestedRhythm } from './Rhythm';
 
+export interface Nested<T> extends Array<T | Nested<T>> { };
+
 export class Brackets {
+
+
+  /** START OF ALTERNATIVE IMPLEMENTATION
+   * The following methods are alternatives to using JSON.parse. They still do not work correctly with marked feet */
   static outerPair(string: string): number[] | false {
     let openingBracket = string.indexOf('[');
     if (openingBracket === -1) {
@@ -76,38 +82,80 @@ export class Brackets {
       return string.map(part => Brackets.resolve(part, modify));
     }
   }
+  /** END OF ALTERNATIVE IMPLEMENTATION */
 
-  static parse(string) {
-    const symbol = '[\\w\\d#\\.\\|]';
+
+
+  static simplify(strings: string[] | string): string[] | string {
+    if (typeof strings === 'string') {
+      return strings;
+    }
+    strings = strings.filter(s => (typeof s === 'string' && !!s) || s.length);
+    if (strings.length === 1) {
+      return strings[0];
+    }
+    return strings;
+  }
+
+  static divide(string: string, symbol: string): string[] | string {
+    const divided = string.split(symbol);
+    return Brackets.simplify(divided);
+  }
+
+  static divideHierarchy(string: string, symbolHierarchy: string[]) {
+    if (!symbolHierarchy.length) {
+      return string;
+    }
+    const divided = Brackets.divide(string, symbolHierarchy[0]);
+    symbolHierarchy = symbolHierarchy.slice(1);
+    if (typeof divided === 'string') {
+      return Brackets.divideHierarchy(divided, symbolHierarchy);
+    }
+    return divided.map(part => Brackets.divideHierarchy(part, symbolHierarchy));
+  }
+
+  static rabbit(hole, fn) {
+    hole = fn(hole);
+    if (Array.isArray(hole)) {
+      hole = hole.map(channel => Brackets.rabbit(channel, fn))
+    }
+    return hole;
+  }
+
+
+  static simplifyDeep(nested: string | Nested<string>) {
+    if (typeof nested === 'string') {
+      return Brackets.simplify(nested);
+    }
+    return Brackets.rabbit(nested, (sub) => {
+      return Brackets.simplify(sub);
+    });
+  }
+
+  static divideDeep(tree: Nested<string> | string, divideHierarchy = [' | ', ' . ', ' ']) {
+    const divided = Brackets.rabbit(tree, (s) => {
+      if (typeof s === 'string') {
+        return Brackets.divideHierarchy(s, divideHierarchy);
+      }
+      return s;
+    });
+    return Brackets.simplifyDeep(divided);
+  }
+
+  static toJson(string) {
+    const symbols = '\\w\\d#\\*\\.\\|\\~';
     const opening = '\\[';
     const closing = '\\]';
     const space = '\\s';
-    const spaceAfterOpening = new RegExp(`${opening}${space}+`, 'g');
-    const spaceBeforeClosing = new RegExp(`${space}+${closing}`, 'g');
-    const symbolsBeforeOpening = new RegExp(`(${symbol}+)${space}*${opening}`, 'g');
-    const symbolsAfterClosing = new RegExp(`${closing}${space}*(${symbol}+)`, 'g');
-    const spaceBetween = new RegExp(`${closing}${space}*${opening}`, 'g');
-    const symbolsAfterOpening = new RegExp(`${opening}(${symbol}+)`, 'g');
-    const symbolsBeforeClosing = new RegExp(`(${symbol}+)${closing}`, 'g');
-    const outerClosing = new RegExp(`${closing}"${closing}$`);
-    const outerOpening = new RegExp(`^${opening}"${opening}`);
-    const toParse = `[${
-      string
-        .replace(spaceAfterOpening, '[') // trim spaces after opening brackets
-        .replace(spaceBeforeClosing, ']') // trim spaces before closing brackets
-        .replace(symbolsBeforeOpening, '$1",[')
-        .replace(symbolsAfterClosing, '],"$1')
-        .replace(spaceBetween, '],[')
+    let toParse =
+      ('[' + string + ']')
+        .replace(new RegExp(`([${symbols}|${space}]+)`, 'g'), '"$1"')
+        .replace(new RegExp(`${closing}${space}*${opening}`, 'g'), '],[')
+        .replace(new RegExp(`"${opening}`, 'g'), '",[')
+        .replace(new RegExp(`${closing}"`, 'g'), '],"')
         .split(' ').join('","')
-      }]`
-      .replace(symbolsAfterOpening, '["$1')
-      .replace(symbolsBeforeClosing, '$1"]')
-      .replace(outerClosing, ']')
-      .replace(outerOpening, '[');
-
-
     try {
-      const parsed = JSON.parse(toParse);//.map(s => s.split(' '));
+      let parsed = Brackets.simplifyDeep(JSON.parse(toParse));
       if (parsed.length === 1) {
         return parsed[0];
       }

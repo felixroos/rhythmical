@@ -17,14 +17,29 @@ import tidal from './tidal.json';
 
 export const examples = {
   chords: {
+    "instrument": "piano",
     "duration": 4,
     "chords": [
       "CM7",
-      "A7",
+      [
+        "Dm7",
+        "G7"
+      ]
+    ],
+    "m": "C2 [D2 G2]"
+  },
+  chordsB: {
+    "instrument": "piano",
+    "duration": 4,
+    "chords": [
+      {
+        "chords": ["CM7"],
+        "duration": 2
+      },
       "Dm7",
       "G7"
     ],
-    "m": "C2 A2 D2 G2"
+    "m": "C2*2 D2 G2"
   },
   bebopChords2: {
     "let": {
@@ -92,6 +107,57 @@ export const examples = {
   transpose: {
     "transpose": 12,
     "m": "C3 D3 E3"
+  },
+  scale: {
+    "duration": 2,
+    "scale": "C3 major",
+    "m": "1 2 3 4 5 6 7 8"
+  },
+  transposeScale: {
+    "duration": 2,
+    "scale": "C3 major",
+    "transpose": 1,
+    "m": "1 2 3 4 5 6 7 8"
+  },
+  scaleFall: {
+    "let": {
+      "fall": "8 6 7 5 6 4 5 3 4 2 3 1 2 -1 1*2"
+    },
+    "duration": 8,
+    "instrument": "piano",
+    "scale": "C4 mixolydian",
+    "assign": {
+      "transpose": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    "p": [
+      "#fall",
+      "#fall",
+      "#fall"
+    ]
+  },
+  chordMelody: {
+    "duration": 4,
+    "instrument": "piano",
+    "let": {
+      "v": "3,5"
+    },
+    "scale": "F3 dorian",
+    "assign": {
+      "transpose": [
+        0,
+        0,
+        1,
+        0,
+        2,
+        1,
+        0
+      ]
+    },
+    "m": "~ #v #v ~ #v*2 #v #v"
   },
   majorsteps: {
     "let": {
@@ -192,23 +258,23 @@ export const examples = {
         "p": [
           "#a #a #b #b #c #c #d #d",
           "~*2 #a #a #b #b #c #c",
-          "~*4 #a #a #b #b",
-          "~*6 #a #a"
+          /* "~*4 #a #a #b #b" *//* ,
+          "~*6 #a #a" */
         ]
       },
       {
         "p": [
           "#a #a #b #b #c #c #d #d",
           "#d #d #a #a #b #b #c #c",
-          "#c #c #d #d #a #a #b #b",
-          "#b #b #c #c #d #d #a #a"
+          /* "#c #c #d #d #a #a #b #b" */
+          /* "#b #b #c #c #d #d #a #a" */
         ]
       },
       {
         "p": [
           "#d #d ~*6",
-          "#c #c #d #d ~*4",
-          "#b #b #c #c #d #d ~*2"
+          /* "#c #c #d #d ~*4", */
+          /* "#b #b #c #c #d #d ~*2" */
         ]
       }
     ]
@@ -302,7 +368,7 @@ export const examples = {
   boleroFeet: {
     instrument: "tidal",
     duration: 6.75,
-    m: '[ht [mt mt mt]] [ht [mt mt mt]] [ht mt] . [ht [mt mt mt]] [ht [mt mt mt]] [[ht ht ht] [mt mt mt]]'
+    m: '[ht [mt mt mt]] [ht [mt mt mt]] [ht mt] | [ht [mt mt mt]] [ht [mt mt mt]] [[ht ht ht] [mt mt mt]]'
   },
   boleroFeet2: {
     instrument: "tidal",

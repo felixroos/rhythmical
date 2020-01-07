@@ -3,12 +3,13 @@ import { Note } from 'tonal';
 
 let active, stopNext, playNext, drawLoop;
 
-declare interface Instrument {
+export declare interface Instrument {
   triggerAttackRelease: (value: string, duration: number, time: number, velocity: number) => any;
+  customSymbols?: string[];
   [key: string]: any;
 }
 
-declare type Instruments = { [key: string]: Instrument };
+export declare type Instruments = { [key: string]: Instrument };
 declare type PlayOptions = {
   instruments: Instruments;
   draw?: (time: number) => any;
@@ -44,14 +45,21 @@ export class Player {
     }
   }
 
+  static getInstrumentSymbols(instruments) {
+    return Object.keys(instruments)
+      .filter(key => !!instruments[key].customSymbols)
+      .reduce((symbols, key) => symbols.concat(instruments[key].customSymbols || []), []);
+  }
+
   static playEvents(events, options: PlayOptions) {
     options = { customSymbols: [], restSymbols: ['~', 'r'], ...options };
-    let { length, instruments, time, customSymbols, restSymbols } = options;
+    let { length, instruments, time, restSymbols, customSymbols } = options;
     if (!instruments) {
       instruments = {
         default: Player.defaultSynth()
       }
     }
+    customSymbols = (customSymbols || []).concat(Player.getInstrumentSymbols(instruments));
     const ahead = 0.06;
     events.push({ time: length - ahead, type: 'loopmark' });
     const part = new Tone.Part((t, e) => {

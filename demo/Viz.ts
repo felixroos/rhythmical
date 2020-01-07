@@ -1,4 +1,5 @@
 import { Note } from 'tonal';
+import { Instruments, Player } from './Player';
 
 export interface RenderedEvent<T> {
   m: T;
@@ -13,7 +14,17 @@ export interface RenderedEvent<T> {
 const ns = "http://www.w3.org/2000/svg";
 let renderStart = 0;
 const debounce = 200;
+
+declare type PianoRollOptions = {
+  position?: number;
+  flip?: false;
+  head?: 0.5;
+  instruments?: Instruments
+}
 export class Viz {
+  static instrumentRange(events: RenderedEvent<string>[]) {
+
+  }
   static pitchRange(events: RenderedEvent<string>[]) {
     return events.reduce((range, event) => [
       !!Note.midi(event.m) && (!range[0] || Note.midi(event.m) < Note.midi(range[0])) ? event.m : range[0],
@@ -21,19 +32,36 @@ export class Viz {
     ], []);
   }
 
-  static pianoRoll(output: { seconds: number, p: RenderedEvent<string>[] }, id: string, position: number = 0, flip = false, head = 0.5) {
+
+  static pianoRoll(output: { seconds: number, p: RenderedEvent<string>[] }, id: string, options: PianoRollOptions = {}) {
+
+    let { position, flip, head, instruments } = {
+      position: 0, flip: false, head: 0.5,
+      ...options
+    }
     const el = document.getElementById(id);
     /* if (Date.now() - renderStart < debounce) {
       return;
     } */
     renderStart = Date.now();
-    const { levels, pitchEvents } = output.p.reduce((r, e) => {
-      if (!!Note.midi(e.m)) {
-        r.pitchEvents.push(e);
+    const { levels, allEvents, instrumentKeys } = output.p.reduce((r, e) => {
+      if (typeof e.m === 'string') { // !!Note.midi(e.m)
+        r.allEvents.push(e);
       }
       r.levels = Math.max(e.path ? e.path.length : 0, r.levels);
+      if (e['instrument'] && !r.instrumentKeys.includes(e['instrument'])) {
+        r.instrumentKeys.push(e['instrument'])
+      }
       return r;
-    }, { levels: 0, pitchEvents: [] });
+    }, { levels: 0, allEvents: [], instrumentKeys: [] });
+    let symbols = [];
+    if (instruments) {
+      symbols = Player.getInstrumentSymbols(instrumentKeys.map(k => instruments[k]))
+        .filter(i => !!i)
+    }
+    const pitchEvents = allEvents.filter(e => !!Note.midi(e.m));
+    const instrumentEvents = allEvents.filter(e => symbols.includes(e.m));
+    const usedSymbols = symbols.filter(s => !!instrumentEvents.find(e => e.m === s));
     /* const levelColor = (level, velocity = 1) => `hsla(257,${level / levels * 100}%,74%, ${velocity})`; */
     /* const levelColor = (level, velocity = 1) => `hsla(257,${level / levels * 100}%,74%, ${level / levels})`; */
     const levelColor = (level, velocity = 1) => `hsla(${level / levels * 100},${level / levels * 100}%,74%, ${1 - (level / levels)})`;
@@ -49,16 +77,19 @@ export class Viz {
 
     const range = Viz.pitchRange(pitchEvents);
     const pitchCount = Note.midi(range[1]) - Note.midi(range[0]) + 1;
+    const rows = pitchCount + symbols.length;
     const vp = [el.clientWidth, el.clientHeight];
 
 
     let pps, ppp;
     if (!flip) {
       pps = Math.max(vp[0] / output.seconds, 100); // pixels per second
-      ppp = vp[1] / pitchCount; // pixels per pitch
+      // ppp = vp[1] / pitchCount; // pixels per pitch
+      ppp = vp[1] / rows; // pixels per pitch
     } else {
       pps = Math.max(vp[1] / output.seconds, 100); // pixels per second
-      ppp = vp[0] / pitchCount; // pixels per pitch
+      // ppp = vp[0] / pitchCount; // pixels per pitch
+      ppp = vp[0] / rows; // pixels per pitch
     }
 
     const pitchPosition = (pitch) => {
@@ -75,7 +106,7 @@ export class Viz {
 
     output.p.filter(e => !!e.block || !!Note.midi(e.m)).forEach((event: RenderedEvent<string>) => {
       let { time, duration, m } = event;
-      let width, height, x, y, pitchSize = 1, pitchRange = [m, m], fill = `rgba(183, 223, 69, ${event.velocity})`,
+      let width, height, x, y, totalSize = 1, pitchRange = [m, m], fill = `rgba(183, 223, 69, ${event.velocity})`,
         stroke = 'rgb(37, 37, 37)';
 
       if (!!event.block) {
@@ -88,8 +119,11 @@ export class Viz {
               .includes((':' + event.path.map(p => p.join('.')).join('-'))))
             .map(p => ({ ...p, name: (':' + p.path.map(p => p.join('.')).join('-')) }))
         pitchRange = Viz.pitchRange(blockPitches);
-
-        pitchSize = Note.midi(pitchRange[1]) - Note.midi(pitchRange[0]) + 1;
+        const customIndices = blockPitches.map(e => symbols.indexOf(e.m));
+        
+        const eventSize = customIndices.length ? Math.max(...customIndices) - Math.min(...customIndices) + 1 : 0;
+        const pitchSize = pitchRange.length ? Note.midi(pitchRange[1]) - Note.midi(pitchRange[0]) + 1 : 0;
+        totalSize = /* eventSize+ */pitchSize;
         const color = blockColor(event, { h: '257', s: 'level', l: 'level', a: '0.7' });
         fill = color;
         stroke = blockColor(event, { h: '257', s: 'level', l: 'level', a: '1' });
@@ -100,14 +134,14 @@ export class Viz {
 
       if (!flip) {
         width = duration * pps;
-        height = ppp * pitchSize;
+        height = ppp * totalSize;
         x = ((time - position)) * pps;
         y = pitchPosition(pitchRange[1]) || 0;
         /* if ((x + duration * pps) < 0 || x > vp[0] || y < 0 || y > vp[1]) {
           return;
         } */
       } else {
-        width = ppp * pitchSize;
+        width = ppp * totalSize;
         height = duration * pps;
         x = vp[0] - pitchPosition(pitchRange[0]) || 0;
         y = vp[1] - (((output.seconds + time - position + duration) % output.seconds) * pps);

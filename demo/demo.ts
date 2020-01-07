@@ -4,7 +4,8 @@ import { examples } from './tunes/examples';
 import { Editor } from './Editor';
 import { Player } from './Player';
 import { Viz } from './Viz';
-import tutorial from './tutorial/tutorial.md';
+import tutorials from './tutorial/tutorials';
+/* import tut from './tutorial/scripting.md'; */
 
 import { harp as harpSamples } from './samples/harp.js';
 import { piano as pianoSamples } from './samples/piano/index.js';
@@ -24,7 +25,7 @@ window.onload = () => {
 
   const exampleKeys = Object.keys(examples);
   /* let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]]; */
-  let json = examples.assign;
+  let json = examples.chords;
   const flip = false;
 
 
@@ -61,9 +62,6 @@ window.onload = () => {
     cello: section(16, smwSoundbank._04, { root: 'D4', loop: true }), // 64
     trumpet: section(16, smwSoundbank._08, { root: 'D4', loop: true }),
     uprightPiano: section(16, smwSoundbank._0a, { root: 'G3', loop: false }), // zu tief
-    /* snare: section(16, smwSoundbank._0b, { root: 'D4', loop: false }),
-    kick: section(16, smwSoundbank._0f, { root: 'D4', loop: false }),
-    hihat: section(16, smwSoundbank._06, { root: 'D4', loop: false }), */
     bongo: section(16, smwSoundbank._10, { root: 'D4', loop: false }),
     hit: section(16, smwSoundbank._12, { root: 'D4', loop: false }),
     clap: section(16, smwSoundbank._13, { root: 'D4', loop: false }),
@@ -76,8 +74,9 @@ window.onload = () => {
     steelGuitar: section(16, smwSoundbank._07, { root: 'D3', loop: false }), // 2800
     steelDrum: section(16, smwSoundbank._09, { root: 'F4', loop: false }), //5536
     distortedGuitar: section(16, smwSoundbank._11, { root: 'G#3', loop: false }), //2304
-    smwDrums: rack({ sd: smwSoundbank._0b, bd: smwSoundbank._0f, hh: smwSoundbank._06 }).connect(reverb)
+    smwDrums: rack({ sd: smwSoundbank._0b, bd: smwSoundbank._0f, hh: smwSoundbank._06 })
   }
+  const smwInstruments = Object.keys(smw).reduce((i, k) => ({ ...i, [k]: smw[k].connect(reverb) }), {});
 
   const instruments = {
     synth,
@@ -118,7 +117,7 @@ window.onload = () => {
     piano: sampler(pianoSamples).connect(reverb),
     drums: rack(drumsounds).connect(reverb),
     tidal: rack(tidalsounds).connect(reverb),
-    ...(Object.keys(smw).reduce((i, k) => ({ ...i, [k]: smw[k].connect(reverb) }), {}))
+    ...smwInstruments
   }
 
 
@@ -145,7 +144,7 @@ window.onload = () => {
         }
         : e
     );
-    const viz = Viz.pianoRoll(rendered, 'viz', position, flip);
+    const viz = Viz.pianoRoll(rendered, 'viz', { position, flip, instruments });
     return {
       rendered,
       viz,
@@ -155,8 +154,25 @@ window.onload = () => {
   }
 
   let prettyOutput, rendered, viz, outputeditor;
+  let tutorial = 0;
 
-  document.getElementById('tutorial').innerHTML = tutorial;
+  function loadTutorial() {
+    document.getElementById('markdown').innerHTML = tutorials[tutorial % tutorials.length];
+    document.getElementById('tutorial').scrollTop = 0;
+    listenExampleClicks();
+  }
+  function nextTutorial() {
+    tutorial += 1;
+    loadTutorial();
+  }
+  function prevTutorial() {
+    tutorial -= 1;
+    loadTutorial()
+  }
+  loadTutorial();
+  document.getElementById('nextTutorial').addEventListener('click', () => nextTutorial());
+  document.getElementById('prevTutorial').addEventListener('click', () => prevTutorial());
+
   function play() {
     if (!rendered || !viz) {
       return;
@@ -234,15 +250,16 @@ window.onload = () => {
     /* const { prettyOutput } = renderJson(json);
     outputeditor.setValue(Editor.prettyJson(prettyOutput), -1); */
   }
-
-  Object.keys(examples).forEach(example => {
-    const id = 'example-' + example;
-    if (!document.getElementById(id)) {
-      /* console.log('unused example', id); */
-      return;
-    }
-    document.getElementById(id).addEventListener('click', () => {
-      loadTune(examples[example]);
+  function listenExampleClicks() {
+    Object.keys(examples).forEach(example => {
+      const id = 'example-' + example;
+      if (!document.getElementById(id)) {
+        /* console.log('unused example', id); */
+        return;
+      }
+      document.getElementById(id).addEventListener('click', () => {
+        loadTune(examples[example]);
+      });
     });
-  });
+  }
 };

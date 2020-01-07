@@ -9,6 +9,8 @@ export interface MusicObject<T> {
   duration?: number;
   length?: number;
   velocity?: number;
+  transpose?: number;
+  chords?: Music<T>[] | Music<T>;
   v?: Music<T>[] | Music<T>; // value
   p?: Music<T>[] | Music<T>; // polyphony shorthand
   m?: Music<T>[] | Music<T>; // monophony shorthand

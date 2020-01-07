@@ -7,6 +7,7 @@ export function rack(samples: { [key: string]: any }, options = {}) {
   let players = new Tone.Players(samples, options);
 
   const s = {
+    customSymbols: Object.keys(samples),
     triggerAttackRelease: (key, duration, time, velocity) => {
       if (!players.has(key)) {
         console.warn(`key ${key} not found for playback`);
