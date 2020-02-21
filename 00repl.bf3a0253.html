@@ -1,0 +1,40 @@
+<h1 id="rhythmical-repl">rhythmical REPL</h1><p>This the <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a> and Tutorial for <a href="https://github.com/felixroos/rhythmical/">rhythmical</a>, a text &amp; JSON based music language for Javascript.</p><p>The top left box is the input and the bottom left is the rendered output (hover to see json), which is used by <a href="https://tonejs.github.io/">Tone.js</a> for playback.</p><h2 id="why-rhythmical">Why rhythmical?</h2><ul>
+<li>Name and approach inspired by <a href="https://github.com/tonaljs/tonal">tonal</a></li>
+<li>Pun: rhythmi<strong>cal</strong>culation</li>
+<li>The insight that musical rhythm is nothing but number ratios / fractions</li>
+<li>There is nothing like it yet (at least in JS)</li>
+</ul><h2 id="why-should-i-care-amaze-me">Why should I care? Amaze me!</h2><p>Ok, here are some Demos:</p><p><button id="example-swimming">Super Mario World - Swimming Theme</button><br><button id="example-cantaloupe">Herbie Hancock- Cantaloupe Island</button><br><button id="example-starworld">Super Mario World - Star World Theme</button>
+<button id="example-zeldasRescueBrackets">A Link To The Past - Princess Zeldas Rescue</button>
+<button id="example-slengTeng">Sleng Teng Riddim</button>
+<button id="example-realRock">Real Rock Riddim</button></p><p>If you are not amazed, maybe you should not be doing music with Javascript and try a DAW or Notation software instead.</p><p>If you are at least mildly amazed, read on...</p><h2 id="meta-design-goals">Meta Design Goals</h2><ul>
+<li>Be <strong>inclusive</strong>: Musician / Human friendly</li>
+<li>Be <strong>gentle</strong>: Let the computer do the calculation</li>
+<li>Be <strong>easy to learn</strong>: The less API, the better.</li>
+<li>Be <strong>relative</strong>: let the only absolute number be the target length/tempo</li>
+<li>Be <strong>semantic</strong>: Everything is groupable</li>
+<li>Be <strong>isomorphic</strong>: Format should be morphable but keep all infos</li>
+<li>Be <strong>non-redundant</strong>: Use same concepts for all levels of time</li>
+<li>Be <strong>quick</strong>: Minimum keystrokes required</li>
+<li>Be <strong>non-biased</strong> by culture: rhythm is universal while pitch systems are not</li>
+<li>Be <strong>extendable</strong>: Provide hooks for functionality extension</li>
+<li>Be <strong>standardized</strong>: Provide methods for validation</li>
+<li>Be <strong>open</strong>: Allow modification</li>
+</ul><h2 id="tldr-show-me-api">TLDR; Show me API</h2><p><em>NOTE: This is a quick API overview, a Step by Step Tutorial can be found below</em></p><p>A rhythmical &quot;<strong>Block</strong>&quot; can be one of three types:</p><ul>
+<li>A <strong>primitive</strong> (neither Array nor Object)</li>
+<li>An <strong>Array</strong> of &quot;Block&quot;s</li>
+<li>A Block <strong>Object</strong> with the following basic properties:<ul>
+<li><strong>p</strong>: polyphonic Block(s)</li>
+<li><strong>m</strong>: monophonic Block(s)</li>
+<li><strong>time</strong>: when does it start<ul>
+<li>p default: 0</li>
+<li>m default: sum of all previous Blocks durations</li>
+</ul>
+</li>
+<li><strong>duration</strong>: how long is it, relative to Block<ul>
+<li>p default: 1</li>
+<li>m default: 1/sum of all Blocks durations</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p>This is the basic API. This alone allows to encode any rhythmical information (and more).</p>

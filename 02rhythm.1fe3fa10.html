@@ -1,0 +1,29 @@
+<h2 id="adding-rhythm-nested-arrays">Adding Rhythm: Nested Arrays</h2><p>Now this is still really boring. This lib is called rhythmical so how about adding some rhythm? Let&#39;s start easy with the german song &quot;Alle meine Entchen&quot;:</p><p><button id="example-entchen">Show Example</button>
+<button id="example-entchenShort">Show Short Example</button></p><h3 id="deeper-string-nesting-with-bracket-notation">Deeper String Nesting with Bracket Notation</h3><p>Using spaces we can flatten our objects by one level to a string. What if we wanted to flat more levels? This is where bracket notation comes in. It works just like in JSON but without the &quot; and , signs:</p><p><button id="example-entchenBrackets">Show Bracket Example</button></p><p>Under the hood, strings with brackets will be parsed to json first.</p><h3 id="simplifying-brackets-by-marking-feet">Simplifying Brackets by &quot;marking feet&quot;</h3><p>To spare the upper level of brackets, you can use &quot; . &quot; to seperate sections:</p><p><button id="example-entchenFeet">Show Example</button></p><h3 id="how-the-calculation-works">How the calculation works</h3><p>As you can see, the structure is like the major scale example but with an Array of Arrays.</p><ul>
+<li>The notes are grouped together into <strong>measures</strong>, contaning 1-4 notes.</li>
+<li>Having set a duration of 10 seconds, and also having 10 measures, each measure is 1 second long.</li>
+<li>The note duration depends on the amount of notes in the measure:<ul>
+<li>a measure with 4 notes will have a note duration of 1/4s = 0.25s</li>
+<li>a measure with 2 notes will have a note duration of 1/2s = 0.5s</li>
+<li>a measure with 1 note will have a note duration of 1/1s = 1s</li>
+</ul>
+</li>
+<li>Examine the bottom left editor to see the calculated output.</li>
+<li>Also pay attention to the <strong>path</strong>, which tells the elements tree position in the format <strong>index/amount of elements in group</strong></li>
+</ul><p>This approach allows defining rhythms solely through data structure as opposed to time and duration values. That is</p><ul>
+<li>Extremely short</li>
+<li>Extremely dynamic</li>
+<li>Extremely cool</li>
+</ul><p>The same idea is also utilized by <a href="https://tidalcycles.org/index.php/Tutorial">TidalCycles</a> and the <a href="https://tonejs.github.io/docs/13.8.25/Sequence">Tone.js Sequence</a></p><h3 id="why-not-just-use-tonejs-sequence-then">Why not just use Tone.js Sequence then?</h3><p>If you just want monophonic nested rhythm notation your good to go, but the good thing about this lib is that it combines the nested notation with polyphony and powerful ways of parsing &amp; manipulation.</p><h3 id="what-if-i-dont-like-nested-arrays"><em>What if I don&#39;t like nested Arrays</em></h3><p>If you don&#39;t like them you don&#39;t have to use them. You can just use polyphonic mode with time and duration instead.</p><p><button id="example-entchenAbsolute">Show Example</button></p><p>But if you prefer that notation, maybe you should not be using this lib at all.</p><h2 id="deeper-nested-rhythms-bolero">Deeper nested rhythms: Bolero</h2><p>We need to go deeper. Let&#39;s play the famous bolero Rhythm</p><p><button id="example-bolero">Show Example</button>
+<button id="example-boleroBrackets">Show Example with Brackets</button></p><p>Now we have Arrays that go up to four levels deep. The levels are</p><ul>
+<li>measures (2)</li>
+<li>beats (3)</li>
+<li>8th notes (2)</li>
+<li>(16th notes (3))</li>
+</ul><p>If you look at the paths of the rendered output, this is what you&#39;ll see as second numbers.</p><p>Even if you&#39;re not familiar with traditional music notation, it&#39;s worth comparing:</p><img src="https://github.com/felixroos/rhythmical/raw/master/img/bolero.png" width="100%"><ul>
+<li>The two measures are indicated by the vertical line in the middle</li>
+<li>The three beats are indicated by beamless gaps + as time signature in front</li>
+<li>The 8th notes are indicated by the upper beam</li>
+<li>The 8th notes are indicated by the lower beam</li>
+<li>The 3s above state, that there should be 3 16ths per 8th note</li>
+</ul><p>The point: western music notation is just a subset of <em>rhythmical</em> notation!</p>

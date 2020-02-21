@@ -1,0 +1,62 @@
+<h3 id="adjusting-note-durations">Adjusting Note Durations</h3>
+<p>The nested notation has some limitations: Imagine you want a note that is three times longer than the next. How would you do it using nested notation?</p>
+<p><button id="example-pumuckel">Show Solution</button></p>
+<p>As you might have already guessed, you can of course change durations of notes the same way we change the duration of the whole piece.</p>
+<ul>
+<li>duration is always relative to all others</li>
+<li>duration defaults to 1 if not specified</li>
+<li>the calculated note duration is duration/total duration</li>
+<li>total duration is the sum of all durations in a group</li>
+<li>in the example, the total duration of the first measure is 4 (3+1)</li>
+</ul>
+<h4 id="duration-string-notation">Duration String Notation</h4>
+<p>To keep it stringy, you can use the following shorthand:</p>
+<p><button id="example-pumuckelShort">Show Example</button></p>
+<p>Now having just nested strings, we could further stringify it using bracket notation:</p>
+<p><button id="example-pumuckelBrackets">Show Example</button></p>
+<h3 id="rests">Rests</h3>
+<p>Rests are just empty strings. Lets have a rest in Funky Town:</p>
+<p><button id="example-funkytown">Show Example</button></p>
+<p><button id="example-funkytownBrackets">Show with Brackets</button></p>
+<!-- TBD FIX -->
+<!-- Here we have a max of two levels nesting. We can flatten that two one level nesting using the . operator:
+
+<button id="example-funkytownBracketsFeet1">Show with two level "marked out feet"</button>
+
+But, there is one more operator to mark out feet:
+
+#### "|" sign
+
+The pipe can be used as a feet marker that is parsed before the dot. So the hierarchy of parsing is:
+
+- " | " top level
+- " . " second
+- " " third
+
+<button id="example-funkytownBracketsFeet2">Show with pipe sign</button> -->
+
+<p>We are using rests also to make the notes shorter. Alternatively you can use &quot;length&quot;:</p>
+<h3 id="length-for-articulation">Length for articulation</h3>
+<p>Length is another way to control the note duration:</p>
+<p><button id="example-funkytownLengths">Show Example</button></p>
+<p>Compared to the nested notation, this feels clunky.. But there is, of course, a length string operator:</p>
+<h4 id="length-string-operator">Length string operator</h4>
+<p><button id="example-funkytownLengthsBrackets">Show with Length Shorthand</button>
+<button id="example-funkytownLengthsFeet">Show with &quot;marked out feet&quot;</button></p>
+<h4 id="difference-between-duration-and-length">Difference between duration and length</h4>
+<ul>
+<li>duration will affect the subdivison, thus the length of all other elements of the same level</li>
+<li>length will NOT affect the subdivison, thus all other elements remain where they are</li>
+</ul>
+<p>This has the following implications:</p>
+<ul>
+<li>decreasing the length leaves empty space where no rests are</li>
+<li>increasing the length will potentially create a overlap with following elements</li>
+</ul>
+<h3 id="velocity">Velocity</h3>
+<p>You can control the velocity with the velocity param:</p>
+<p><button id="example-shepard">Play Shepard Scale Example</button></p>
+<p>When nesting blocks with velocities, the velocities are multiplied down:</p>
+<p><button id="example-nestedVelocity">Play Nested Velocity Example</button></p>
+<p>Of course this example only shows that it works... It would be much easier to notate this in one level. In the real world, this can be helpful to e.g. change the volume of a whole part while keeping the nested artuclations in correct relations to each other.</p>
+<h4 id="tbd-velocity-string-operator">TBD: Velocity string operator</h4>

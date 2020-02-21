@@ -1,0 +1,102 @@
+<h2 id="advanced-techniques">Advanced Techniques</h2>
+<p>Let&#39;s look at some more advanced topics to handle time:</p>
+<h3 id="creating-arpeggios-using-length">Creating arpeggios using length</h3>
+<p>Like mentioned earlier, the difference between length and duration is: length has no effect on the total duration of the group. This enables us to create arpeggios:</p>
+<p><button id="example-length">Show Example</button>
+<button id="example-lengthShort">Short Notation</button></p>
+<p>In the Example, the note lenghts exceed their group. This would not be possible in western staff notation without using ties.</p>
+<!-- In the future, there will be shorthand symbols for string notation for common articulations. -->
+
+<h3 id="syncopation">Syncopation</h3>
+<p>With, length we can also create syncopated notes. Syncopation is when a notes&#39; duration exceeds the group. It is heavily used in all kinds of popular music genres:</p>
+<p><button id="example-syncopation">Show Example</button></p>
+<p>There will also be a tie flag in the future with which notes can be prolonged (like in western notation).</p>
+<h3 id="tbd-ties">TBD: Ties</h3>
+<h3 id="tbd-swing">TBD: Swing</h3>
+<h3 id="polyrhythms-vs-metric-modulation">Polyrhythms vs Metric Modulation</h3>
+<p>So far we did not talk about time signatures. Before we talk about changing time signatures, lets have a look at Polyrhythms.<br>Here are two examples, where the melody stays exactly the same, but the bass melody plays different pulses/time signatures:</p>
+<p><button id="example-triplets">A: 4/4 quarters + half note triplets</button>
+<button id="example-quartuplets">B: 3/4 quarter quartuplets + quarters</button></p>
+<p><button id="example-tripletsShort">A short</button>
+<button id="example-quartupletsShort">B short</button></p>
+<p>Depending on the bass, one of the two melody bars will go against the pulse. This is because two different sized grids are playing at the same time. This is also called a polyrhythm:</p>
+<ul>
+<li>Example A is called &quot;3 against 4&quot;</li>
+<li>Example B is called &quot;4 against 3&quot;</li>
+<li>&quot;x against y&quot;: x is the &quot;foreign&quot; grid size and y is the established pulse</li>
+</ul>
+<p>In music theory, this can be expressed using tuplets:</p>
+<img src="/tupletsAB.83146e34.png" width="100%">
+
+<p>The same thing could also be notated using metric modulations:</p>
+<img src="/modulationAB2.fcb97eaf.png" width="100%">
+
+<p>The crucial part here is the tempo change:</p>
+<ul>
+<li>The first bar has 120 quarter notes (=4 8th notes) per minute</li>
+<li>The second bar has 120 pointed 8ths notes (=3 8th notes) per minute.</li>
+<li>This reflects the opposition of 4 and 3</li>
+</ul>
+<p>Depending on the context of the piece, both notations can be found in the real world:</p>
+<ul>
+<li>Tuplets are used for only short passages, that go against the normal pulse.</li>
+<li>Metric modulation is used when the time signature should change permanently. The part where both grids are superimposed is normally used as a pivot point for a smoother/easier transition.</li>
+</ul>
+<p>When you compare the two bass parts of A and B, you&#39;ll notice that the part of B is slower. This is because B fits 3 and A fits 4 pulses in the same duration.</p>
+<ul>
+<li>Check <a href="https://www.youtube.com/watch?v=AzsKR7vNzAA">this video about metric modulations used by the Beatles</a></li>
+<li>Check <a href="https://www.youtube.com/watch?v=XK7uH_pKIAI">this recording of the Miles Davis Quintet</a> for a masterful example of 3 vs 4 metric modulation.</li>
+</ul>
+<h3 id="changing-time-signatures-vs-odd-meter">Changing Time Signatures vs Odd Meter</h3>
+<p>If we want to keep the same tempo/pulse while having less notes (=time signature change), we either have to adjust each measures duration (C) or pack both measures into one (C&#39;):</p>
+<p><button id="example-timeChange">C: 4/4 + 3/4</button>
+<button id="example-sevenfour">C&#39;: 7/4</button></p>
+<p>As notation, C would be a &quot;normal&quot; time signature change while C&#39; just adds the two measures to a so called &quot;odd meter&quot;:</p>
+<img src="/timechange.82ad8cc6.png" width="100%">
+
+<p>Like with tuplets vs modulations, both of these notations can be found in the real world:</p>
+<ul>
+<li>Changing time signatures for a one time, permanent change in bar length</li>
+<li>Using odd time signatures to keep changing between group lengths</li>
+</ul>
+<h4 id="change-time-signature-for-multiple-measures">Change time signature for multiple measures</h4>
+<p>Now if we want a permanent time signature change, we have to specify the duration for every single measure. That&#39;s not very sleek..</p>
+<p>We could avoid that by wrapping all measures with the same time signature into one block and set the duration to n*t:</p>
+<ul>
+<li>n is the number of measures</li>
+<li>t is the amount of beats per measure</li>
+</ul>
+<p><button id="example-timeChangeB">Show Example</button></p>
+<p><strong>The Problem:</strong> Each time you add a measure to a block, all the ratios are changing and you have to recalculate.</p>
+<p><strong>Solution:</strong> duration has an array notation! This will autocalculate the block duration by multiplying the number of items with the specified duration:</p>
+<p><button id="example-timeChangeC">Show Example</button></p>
+<p><strong>TLDR;</strong> To set a time signature for multiple measures, wrap them in block with <em>duration: [beats]</em>. This way you can add and remove measures without having to change anything else.</p>
+<h4 id="tbd-duration-on-groups">TBD: Duration on Groups</h4>
+<p>=&gt; [C D E F]<em>4 [C D E]</em>3</p>
+<h3 id="tbd-groupings--assign-properties-to-children">TBD: Groupings / assign properties to children</h3>
+<p>=&gt; { &quot;m&quot;: &quot;[C D E F][c d e]&quot;, &quot;duration&quot;: [4,3] }</p>
+<h3 id="tbd-polymeter">TBD: Polymeter</h3>
+<!-- ### Comparison: rhythmical vs western staff notation
+
+As we saw in the bolero example, there are big similarities between western staff notation and rhythmical. Being not restricted to a 2d sheet of paper, rhythmical notation can do a lot more and therefore could be called a superset of western notation.
+
+When can rhythmical notation be converted to a staff notation? Or differently put: What should be avoided to be compliant with western notation?
+
+*   No group overflow => note end should not exceed group end
+*   Use ties for syncopation to avoid overflow
+*   Duration maps to greater note value while tie maps to tie...
+*   Polyphony should remain as homophonic as possible
+*   Non homophonic polyphony should be seperated to multiple staffs -->
+
+<h3 id="tbd-seconds">TBD: seconds</h3>
+<p>Idea: specifying the seconds of any block is engough to determine the total length.</p>
+<h3 id="tbd-loops--pickups">TBD: Loops &amp; Pickups</h3>
+<h2 id="tbd-plugins">TBD: Plugins</h2>
+<h3 id="tbd-format-subsets">TBD: Format Subsets</h3>
+<h3 id="tbd-parameter-automation">TBD: Parameter Automation</h3>
+<h3 id="harmonic-plugins">Harmonic Plugins</h3>
+<h4 id="tbd-transposition">TBD: Transposition</h4>
+<h4 id="tbd-degrees">TBD: Degrees</h4>
+<h4 id="tbd-chords">TBD: Chords</h4>
+<h2 id="tbd-live-coding-with-tonejs">TBD: Live Coding with Tone.js</h2>
+<h3 id="tbd-seamless-cycles">TBD: Seamless Cycles</h3>

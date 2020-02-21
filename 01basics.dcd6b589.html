@@ -1,0 +1,58 @@
+<h1 id="tutorial">Tutorial</h1>
+<p>Lets learn the basics by looking at and hearing some Examples.</p>
+<h2 id="about-the-editor">About the Editor</h2>
+<ul>
+<li>The top left area is the input format (human)</li>
+<li>The bottom left area contains the rendered output (svg)</li>
+<li>If you hover over the output, you see the output JSON</li>
+<li>The output is regenerated on every keystroke</li>
+<li>You can play and stop via the buttons</li>
+<li>When pressing play while something is already playing, it will wait till the end before playing the new input.</li>
+<li>In the Tutorial there are many Examples that can be loaded into the Editor. They will be played immediately</li>
+<li>Currently, you cannot save files, so save them for yourself somewhere...</li>
+</ul>
+<h2 id="monophony-basics">Monophony Basics</h2>
+<p>Lets start the tutorial by learning the basics of monophonic melodies.</p>
+<h3 id="one-note-concert-pitch">One Note: Concert Pitch</h3>
+<p>This Example just plays a single note for one second. It contains nothing than the primitive string &#39;A4&#39;.</p>
+<p><button id="example-a">Show Example</button></p>
+<p>Let&#39;s look at the output (bottom left). It will always contain an object of the following structure:</p>
+<ul>
+<li>seconds: The absolute length in seconds</li>
+<li>p: contains all events in absolute form</li>
+<li>m: the note / or any content you put in</li>
+<li>path: see below</li>
+<li>time: the start time of the note attack</li>
+<li>duration: the duration of the note</li>
+</ul>
+<h3 id="two-notes-german-ambulance">Two Notes: German Ambulance</h3>
+<p>This Example plays two notes like a german ambulance. It contains an Array of two primitives. This will play the notes in sequence.</p>
+<p><button id="example-fourth">Show Example</button></p>
+<p>The same can be achieved by seperating the notes with a space:</p>
+<p><button id="example-fourthShort">Show Example</button></p>
+<p>This will be converted to an Array under the hood.</p>
+<h3 id="about-the-path">About the path</h3>
+<p>The path is an Array containing Arrays of three numbers: [time, block duration, event duration]:</p>
+<ul>
+<li>time: time of the event, relative to its Block</li>
+<li>block duration: the sum of all the blocks event durations</li>
+<li>duration: the duration of the event, relative to its Block</li>
+<li>In our Example, the first note starts at time 0, with a block duration of two and a duration of 1</li>
+<li>The second note starts at time 1, with the same block duration/duration.</li>
+</ul>
+<p><strong>Why?</strong> The path is used to calculate the absolute time &amp; duration of an event. It is a good way to keep track of an elements position while keeping everything smoothly integer &amp; precise. In the end, only one calculation is made to determine the absolute numbers. The path also contains the grouping information =&gt; no information loss.</p>
+<h3 id="more-notes-major-scale">More Notes: Major Scale</h3>
+<p>Lets play a major scale</p>
+<p><button id="example-major1">Show Example</button>
+<button id="example-major1short">Show Short Example</button></p>
+<p>That&#39;s really quick.. This is because the default time is 1 second. We can slow it down by wrapping it with an Object that has a duration:</p>
+<p><button id="example-major4">Show Example</button>
+<button id="example-major4short">Show Short Example</button></p>
+<p>The value of the &quot;m&quot; contains our notes. &quot;m&quot; stands for monophonic.</p>
+<h3 id="the-snake-bites-its-tail">The Snake bites its tail</h3>
+<p>Maybe you ask yourself why the top level property in the output is called seconds, and not duration?</p>
+<ul>
+<li>This enables using the rendered output as input again. Try it by copy pasting from bottom to top!</li>
+<li>If we would use duration, we would scale our absolute time values again by that amount</li>
+<li>This may seem like a gimmick, but it shows the isomorphic nature of the format. Also, it is a nice <a href="https://en.wikipedia.org/wiki/Strange_loop">strange loop</a></li>
+</ul>

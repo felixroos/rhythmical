@@ -1,0 +1,294 @@
+<h1 id="rhythmical-repl">rhythmical REPL</h1>
+<p>This the <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a> and Tutorial for <a href="https://github.com/felixroos/rhythmical/">rhytmical</a>, a JSON based format for music.</p>
+<p>The top left box is the input and the bottom left is the rendered output, which is used by <a href="https://tonejs.github.io/">Tone.js</a> for playback.</p>
+<h2 id="why-rhythmical">Why rhythmical?</h2>
+<ul>
+<li>Name and approach inspired by <a href="https://github.com/tonaljs/tonal">tonal</a></li>
+<li>Pun: rhythmi<strong>cal</strong>culation</li>
+<li>The insight that musical rhythm is nothing but number ratios / fractions</li>
+<li>There is nothing like it yet (at least in JS)</li>
+</ul>
+<h2 id="why-should-i-care-amaze-me">Why should I care? Amaze me!</h2>
+<p>Ok, here are some sophisticated Examples:</p>
+<p><button id="example-swimming">Super Mario World Swimming Theme</button><br><button id="example-cantaloupe">Cantaloupe Island Groove by Herbie Hancock</button><br><button id="example-starworld">Super Mario World Star World Theme</button></p>
+<p>If you are not amazed, maybe you should not be doing music with Javascript and try a DAW or Notation software instead.</p>
+<p>If you are at least mildly amazed, read on...</p>
+<h2 id="meta-design-goals">Meta Design Goals</h2>
+<ul>
+<li>Be <strong>inclusive</strong>: Musician / Human friendly</li>
+<li>Be <strong>gentle</strong>: Let the computer do the calculation</li>
+<li>Be <strong>easy to learn</strong>: The less API, the better.</li>
+<li>Be <strong>relative</strong>: let the only absolute number be the target length/tempo</li>
+<li>Be <strong>semantic</strong>: Everything is groupable</li>
+<li>Be <strong>isomorphic</strong>: Format should be morphable but keep all infos</li>
+<li>Be <strong>non-redundant</strong>: Use same concepts for all levels of time</li>
+<li>Be <strong>quick</strong>: Minimum keystrokes required</li>
+<li>Be <strong>non-biased</strong> by culture: rhythm is universal while pitch systems are not</li>
+<li>Be <strong>extendable</strong>: Provide hooks for functionality extension</li>
+<li>Be <strong>standardized</strong>: Provide methods for validation</li>
+<li>Be <strong>open</strong>: Allow modification</li>
+</ul>
+<h2 id="tldr-show-me-api">TLDR; Show me API</h2>
+<p><em>NOTE: This is a quick API overview, a Step by Step Tutorial can be found below</em></p>
+<p>A rhythmical &quot;<strong>Block</strong>&quot; can be one of three types:</p>
+<ul>
+<li>A <strong>primitive</strong> (neither Array nor Object)</li>
+<li>An <strong>Array</strong> of &quot;Block&quot;s</li>
+<li>A Block <strong>Object</strong> with the following basic properties:<ul>
+<li><strong>p</strong>: polyphonic Block(s)</li>
+<li><strong>m</strong>: monophonic Block(s)</li>
+<li><strong>time</strong>: when does it start<ul>
+<li>p default: 0</li>
+<li>m default: sum of all previous Blocks durations</li>
+</ul>
+</li>
+<li><strong>duration</strong>: how long is it, relative to Block<ul>
+<li>p default: 1</li>
+<li>m default: 1/sum of all Blocks durations</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This is the basic API. This alone allows to encode any rhythmical information (and more).</p>
+<h1 id="tutorial">Tutorial</h1>
+<p>Lets learn the basics by looking at and hearing some Examples.</p>
+<h2 id="about-the-editor">About the Editor</h2>
+<ul>
+<li>The top left area is the input format (human)</li>
+<li>The bottom left area contains the rendered output (machine)</li>
+<li>The output is regenerated on every keystroke</li>
+<li>You can play and stop via the buttons</li>
+<li>When pressing play while something is already playing, it will wait till the end before playing the new input.</li>
+<li>In the Tutorial there are many Examples that can be loaded into the Editor. They will be played immediately</li>
+<li>Currently, you cannot save files, so save them for yourself somewhere...</li>
+</ul>
+<h2 id="monophony-basics">Monophony Basics</h2>
+<p>Lets start the tutorial by learning the basics of monophonic melodies.</p>
+<h3 id="one-note-concert-pitch">One Note: Concert Pitch</h3>
+<p>This Example just plays a single note for one second. It contains nothing than the primitive string &#39;A4&#39;.</p>
+<p><button id="example-a">Show Example</button></p>
+<p>Let&#39;s look at the output (bottom left). It will always contain an object of the following structure:</p>
+<ul>
+<li>seconds: The absolute length in seconds</li>
+<li>p: contains all events in absolute form</li>
+<li>m: the note / or any content you put in</li>
+<li>path: see below</li>
+<li>time: the start time of the note attack</li>
+<li>duration: the duration of the note</li>
+</ul>
+<h3 id="two-notes-german-ambulance">Two Notes: German Ambulance</h3>
+<p>This Example plays two notes like a german ambulance. It contains an Array of two primitives. This will play the notes in sequence.</p>
+<p><button id="example-fourth">Show Example</button></p>
+<h3 id="about-the-path">About the path</h3>
+<p>The path is an Array containing Arrays of three numbers: [time, block duration, event duration]:</p>
+<ul>
+<li>time: time of the event, relative to its Block</li>
+<li>block duration: the sum of all the blocks event durations</li>
+<li>duration: the duration of the event, relative to its Block</li>
+<li>In our Example, the first note starts at time 0, with a block duration of two and a duration of 1</li>
+<li>The second note starts at time 1, with the same block duration/duration.</li>
+</ul>
+<p><strong>Why?</strong> The path is used to calculate the absolute time &amp; duration of an event. It is a good way to keep track of an elements position while keeping everything smoothly integer &amp; precise. In the end, only one calculation is made to determine the absolute numbers. The path also contains the grouping information =&gt; no information loss.</p>
+<h3 id="more-notes-major-scale">More Notes: Major Scale</h3>
+<p>Lets play a major scale</p>
+<p><button id="example-major1">Show Example</button></p>
+<p>That&#39;s really quick.. This is because the default time is 1 second. We can slow it down by wrapping it with an Object that has a duration:</p>
+<p><button id="example-major4">Show Example</button></p>
+<p>The value of the &quot;m&quot; contains our notes. &quot;m&quot; stands for monophonic.</p>
+<h3 id="the-snake-bites-its-tail">The Snake bites its tail</h3>
+<p>Maybe you ask yourself why the top level property in the output is called seconds, and not duration?</p>
+<ul>
+<li>This enables using the rendered output as input again. Try it by copy pasting from bottom to top!</li>
+<li>If we would use duration, we would scale our absolute time values again by that amount</li>
+<li>This may seem like a gimmick, but it shows the isomorphic nature of the format. Also, it is a nice <a href="https://en.wikipedia.org/wiki/Strange_loop">strange loop</a></li>
+</ul>
+<h3 id="adding-rhythm-nested-arrays">Adding Rhythm: Nested Arrays</h3>
+<p>Now this is still really boring. This lib is called rhythmical so how about adding some rhythm? Let&#39;s start easy with the german song &quot;Alle meine Entchen&quot;:</p>
+<p><button id="example-entchen">Show Example</button></p>
+<p>As you can see, the structure is like the major scale example but with an Array of Arrays.</p>
+<ul>
+<li><p>The notes are grouped together into <strong>measures</strong>, contaning 1-4 notes.</p>
+</li>
+<li><p>Having set a duration of 10 seconds, and also having 10 measures, each measure is 1 second long.</p>
+</li>
+<li><p>The note duration depends on the amount of notes in the measure:</p>
+</li>
+<li><p>a measure with 4 notes will have a note duration of 1/4s = 0.25s</p>
+</li>
+<li><p>a measure with 2 notes will have a note duration of 1/2s = 0.5s</p>
+</li>
+<li><p>a measure with 1 note will have a note duration of 1/1s = 1s</p>
+</li>
+<li><p>Examine the bottom left editor to see the calculated output.</p>
+</li>
+<li><p>Also pay attention to the <strong>path</strong>, which tells the elements tree position in the format <strong>index/amount of elements in group</strong></p>
+</li>
+</ul>
+<p>This approach allows defining rhythms solely through data structure as opposed to time and duration values. That is</p>
+<ul>
+<li>Extremely short</li>
+<li>Extremely dynamic</li>
+<li>Extremely cool</li>
+</ul>
+<p>The same idea is also utilized by <a href="https://tidalcycles.org/index.php/Tutorial">TidalCycles</a> and the <a href="https://tonejs.github.io/docs/13.8.25/Sequence">Tone.js Sequence</a></p>
+<h4 id="why-not-just-use-tonejs-sequence-then">Why not just use Tone.js Sequence then?</h4>
+<p>If you just want monophonic nested rhythm notation your good to go, but the good thing about this lib is that it combines the nested notation with polyphony and powerful ways of parsing &amp; manipulation.</p>
+<h4 id="what-if-i-dont-like-nested-arrays"><em>What if I don&#39;t like nested Arrays</em></h4>
+<p>If you don&#39;t like them you don&#39;t have to use them. You can just use polyphonic mode with time and duration instead.</p>
+<p><button id="example-entchenAbsolute">Show Example</button></p>
+<p>But if you prefer that notation, maybe you should not be using this lib at all.</p>
+<h3 id="deeper-nested-rhythms-bolero">Deeper nested rhythms: Bolero</h3>
+<p>We need to go deeper. Let&#39;s play the famous bolero Rhythm</p>
+<p><button id="example-bolero">Show Example</button></p>
+<p>Now we have Arrays that go up to four levels deep. The levels are</p>
+<ul>
+<li>measures (2)</li>
+<li>beats (3)</li>
+<li>8th notes (2)</li>
+<li>16th notes (3)</li>
+</ul>
+<p>If you look at the paths of the rendered output, this is what you&#39;ll see as second numbers.</p>
+<p>Even if you&#39;re not familiar with traditional music notation, it&#39;s worth comparing:</p>
+<img src="https://github.com/felixroos/rhythmical/raw/master/img/bolero.png" width="100%">
+
+<ul>
+<li>The two measures are indicated by the vertical line in the middle</li>
+<li>The three beats are indicated by beamless gaps + as time signature in front</li>
+<li>The 8th notes are indicated by the upper beam</li>
+<li>The 8th notes are indicated by the lower beam</li>
+<li>The 3s above state, that there should be 3 16ths per 8th note</li>
+</ul>
+<p>The point: western music notation is just a subset of <em>rhythmical</em> notation!</p>
+<h3 id="adjusting-note-durations">Adjusting Note Durations</h3>
+<p>The nested notation has some limitations: Imagine you want a note that is three times longer than the next. How would you do it using nested notation?</p>
+<p><button id="example-pumuckel">Show Solution</button></p>
+<p>As you might have already guessed, you can of course change durations of notes the same way we change the duration of the whole piece.</p>
+<ul>
+<li>duration is always relative to all others</li>
+<li>duration defaults to 1 if not specified</li>
+<li>the calculated note duration is duration/total duration</li>
+<li>total duration is the sum of all durations in a group</li>
+<li>in the example, the total duration of the first measure is 4 (3+1)</li>
+</ul>
+<p>In the future, there will be a shorthand notation with strings to achieve the same result much shorter.</p>
+<h3 id="rests">Rests</h3>
+<p>Rests are just empty strings. Lets have a rest in Funky Town:</p>
+<p><button id="example-funkytown">Show Example</button></p>
+<p>Here we are also using rests to make the notes shorter. This can also be done by using lengths.</p>
+<h3 id="velocity">Velocity</h3>
+<p>You can control the velocity with the velocity param:</p>
+<p><button id="example-shepard">Play Shepard Scale Example</button></p>
+<p>When nesting blocks with velocities, the velocities are multiplied down:</p>
+<p><button id="example-nestedVelocity">Play Nested Velocity Example</button></p>
+<p>Of course this example only shows that it works... It would be much easier to notate this in one level. In the real world, this can be helpful to e.g. change the volume of a whole part while keeping the nested artuclations in correct relations to each other.</p>
+<h2 id="polyphony-basics">Polyphony Basics</h2>
+<p>Now enough of those monophonic melodies. It&#39;s the 21st century, we got polyphony:</p>
+<h3 id="polyphonic-voices">Polyphonic Voices</h3>
+<p><button id="example-funkytownPoly">Show Example</button></p>
+<p>This Example uses &quot;p&quot; to define two seperate voices that should run in parallel:</p>
+<ul>
+<li>The main melody</li>
+<li>and the bassline</li>
+</ul>
+<p>To make sure both &quot;voices&quot; are in the same groove, they need to have an equal duration.</p>
+<h3 id="polyphonic-chords">Polyphonic Chords</h3>
+<p>We can not only nest melodies with polyphony, but also nest polyphony inside melodies (or both):</p>
+<p><button id="example-funkytownPolyB">Show Example</button></p>
+<h2 id="advanced-techniques">Advanced Techniques</h2>
+<p>Let&#39;s look at some more advanced topics to handle time:</p>
+<h3 id="controlling-note-length">Controlling note length</h3>
+<p>There is a second parameter to control the note duration: length. The difference between length and duration is, that length has no effect on the total duration of the group. This enables us to control the note articulation seperately.</p>
+<p><button id="example-length">Show Example</button></p>
+<p>In the Example, the note lenghts exceed their group. This would not be possible in western staff notation without using ties.</p>
+<p>In the future, there will be shorthand symbols for string notation for common articulations.</p>
+<h3 id="syncopation">Syncopation</h3>
+<p>With, length we can also create syncopated notes. Syncopation is when a notes&#39; duration exceeds the group. It is heavily used in all kinds of popular music genres:</p>
+<p><button id="example-syncopation">Show Example</button></p>
+<p>There will also be a tie flag in the future with which notes can be prolonged (like in western notation).</p>
+<h3 id="tbd-ties">TBD: Ties</h3>
+<h3 id="tbd-swing">TBD: Swing</h3>
+<h3 id="polyrhythms-vs-metric-modulation">Polyrhythms vs Metric Modulation</h3>
+<p>So far we did not talk about time signatures. Before we talk about changing time signatures, lets have a look at Polyrhythms.<br>Here are two examples, where the melody stays exactly the same, but the bass melody plays different pulses/time signatures:</p>
+<ul>
+<li><button id="example-triplets">A: 4/4 quarters + half note triplets</button></li>
+<li><button id="example-quartuplets">B: 3/4 quarter quartuplets + quarters</button></li>
+</ul>
+<p>Depending on the bass, one of the two melody bars will go against the pulse. This is because two different sized grids are playing at the same time. This is also called a polyrhythm:</p>
+<ul>
+<li>Example A is called &quot;3 against 4&quot;</li>
+<li>Example B is called &quot;4 against 3&quot;</li>
+<li>&quot;x against y&quot;: x is the &quot;foreign&quot; grid size and y is the established pulse</li>
+</ul>
+<p>In music theory, this can be expressed using tuplets:</p>
+<img src="/tupletsAB.83146e34.png" width="100%">
+
+<p>The same thing could also be notated using metric modulations:</p>
+<img src="/modulationAB2.fcb97eaf.png" width="100%">
+
+<p>The crucial part here is the tempo change:</p>
+<ul>
+<li>The first bar has 120 quarter notes (=4 8th notes) per minute</li>
+<li>The second bar has 120 pointed 8ths notes (=3 8th notes) per minute.</li>
+<li>This reflects the opposition of 4 and 3</li>
+</ul>
+<p>Depending on the context of the piece, both notations can be found in the real world:</p>
+<ul>
+<li>Tuplets are used for only short passages, that go against the normal pulse.</li>
+<li>Metric modulation is used when the time signature should change permanently. The part where both grids are superimposed is normally used as a pivot point for a smoother/easier transition.</li>
+</ul>
+<p>When you compare the two bass parts of A and B, you&#39;ll notice that the part of B is slower. This is because B fits 3 and A fits 4 pulses in the same duration.</p>
+<ul>
+<li>Check <a href="https://www.youtube.com/watch?v=AzsKR7vNzAA">this video about metric modulations used by the Beatles</a></li>
+<li>Check <a href="https://www.youtube.com/watch?v=XK7uH_pKIAI">this recording of the Miles Davis Quintet</a> for a masterful example of 3 vs 4 metric modulation.</li>
+</ul>
+<h3 id="changing-time-signatures-vs-odd-meter">Changing Time Signatures vs Odd Meter</h3>
+<p>If we want to keep the same tempo/pulse while having less notes (=time signature change), we either have to adjust each measures duration (C) or pack both measures into one (C&#39;):</p>
+<ul>
+<li><button id="example-timeChange">C: 4/4 + 3/4</button></li>
+<li><button id="example-sevenfour">C&#39;: 7/4</button></li>
+</ul>
+<p>As notation, C would be a &quot;normal&quot; time signature change while C&#39; just adds the two measures to a so called &quot;odd meter&quot;:</p>
+<img src="/timechange.82ad8cc6.png" width="100%">
+
+<p>Like with tuplets vs modulations, both of these notations can be found in the real world:</p>
+<ul>
+<li>Changing time signatures for a one time, permanent change in bar length</li>
+<li>Using odd time signatures to keep changing between group lengths</li>
+</ul>
+<h4 id="change-time-signature-for-multiple-measures">Change time signature for multiple measures</h4>
+<p>Now if we want a permanent time signature change, we have to specify the duration for every single measure. That&#39;s not very sleek..</p>
+<p>We could avoid that by wrapping all measures with the same time signature into one block and set the duration to n*t:</p>
+<ul>
+<li>n is the number of measures</li>
+<li>t is the amount of beats per measure</li>
+</ul>
+<p><button id="example-timeChangeB">Show Example</button></p>
+<p><strong>The Problem:</strong> Each time you add a measure to a block, all the ratios are changing and you have to recalculate.</p>
+<p><strong>Solution:</strong> duration has an array notation! This will autocalculate the block duration by multiplying the number of items with the specified duration:</p>
+<p><button id="example-timeChangeC">Show Example</button></p>
+<p><strong>TLDR;</strong> To set a time signature for multiple measures, wrap them in block with <em>duration: [beats]</em>. This way you can add and remove measures without having to change anything else.</p>
+<h3 id="tbd-groupings">TBD: Groupings</h3>
+<h3 id="tbd-polymeter">TBD: Polymeter</h3>
+<!-- ### Comparison: rhythmical vs western staff notation
+
+As we saw in the bolero example, there are big similarities between western staff notation and rhythmical. Being not restricted to a 2d sheet of paper, rhythmical notation can do a lot more and therefore could be called a superset of western notation.
+
+When can rhythmical notation be converted to a staff notation? Or differently put: What should be avoided to be compliant with western notation?
+
+*   No group overflow => note end should not exceed group end
+*   Use ties for syncopation to avoid overflow
+*   Duration maps to greater note value while tie maps to tie...
+*   Polyphony should remain as homophonic as possible
+*   Non homophonic polyphony should be seperated to multiple staffs -->
+
+<h3 id="tbd-loops--pickups">TBD: Loops &amp; Pickups</h3>
+<h2 id="tbd-plugins">TBD: Plugins</h2>
+<h3 id="tbd-format-subsets">TBD: Format Subsets</h3>
+<h3 id="tbd-parameter-automation">TBD: Parameter Automation</h3>
+<h3 id="harmonic-plugins">Harmonic Plugins</h3>
+<h4 id="tbd-transposition">TBD: Transposition</h4>
+<h4 id="tbd-degrees">TBD: Degrees</h4>
+<h4 id="tbd-chords">TBD: Chords</h4>
+<h2 id="tbd-live-coding-with-tonejs">TBD: Live Coding with Tone.js</h2>
+<h3 id="tbd-seamless-cycles">TBD: Seamless Cycles</h3>
