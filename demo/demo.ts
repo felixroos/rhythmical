@@ -6,7 +6,6 @@ import { Player } from './Player';
 import { Viz } from './Viz';
 import tutorials from './tutorial/tutorials';
 /* import tut from './tutorial/scripting.md'; */
-
 import { harp as harpSamples } from './samples/harp.js';
 import { piano as pianoSamples } from './samples/piano/index.js';
 
@@ -20,12 +19,12 @@ import { Transforms, transforms } from './transforms';
 
 /* import * as yaml from 'js-yaml'; */
 declare const ace: any;
-
-window.onload = () => {
-
+let demoLoaded = false;
+function loadDemo() {
+  demoLoaded = true;
   const exampleKeys = Object.keys(examples);
   /* let json = examples[exampleKeys[Math.floor(Math.random() * exampleKeys.length)]]; */
-  let json = examples.chords;
+  let json = examples.swimming;
   const flip = false;
 
 
@@ -155,7 +154,6 @@ window.onload = () => {
 
   let prettyOutput, rendered, viz, outputeditor;
   let tutorial = 0;
-
   function loadTutorial() {
     document.getElementById('markdown').innerHTML = tutorials[tutorial % tutorials.length];
     document.getElementById('tutorial').scrollTop = 0;
@@ -262,4 +260,14 @@ window.onload = () => {
       });
     });
   }
+}
+
+window.onload = () => {
+  loadDemo();
 };
+
+setTimeout(() => {
+  if (!demoLoaded) {
+    loadDemo();
+  }
+}, 1000);

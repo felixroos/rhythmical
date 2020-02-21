@@ -12,10 +12,81 @@ import zeldasRescueBrackets from './zeldas-rescue-brackets.yaml';
 import vanillaDome from './vanilla-dome.json';
 import dub1 from './dub1.json';
 import slengTeng from './riddims/slengteng.json';
+import edgyEdgar from './edgyedgar.yml';
 import realRock from './riddims/realrock.json';
 import tidal from './tidal.json';
 
 export const examples = {
+  edgyEdgar,
+  hometown: {
+    "let": {
+      "a": {
+        "p": [
+          "3,5"
+        ]
+      }
+    },
+    "duration": [
+      12
+    ],
+    "instrument": "synth",
+    "scale": "Eb3 lydian",
+    "p": [
+      "-7 -6 -5 -4 -5 -6 -7 -8",
+      "[10*2 8 10] [11 [11 12 11] 10 9] [10*6 11 10] [9*2 11 9] [9] [7 9] 6 7",
+      {
+        "assign": {
+          "transpose": [
+            0,
+            1,
+            2,
+            3,
+            2,
+            1,
+            0,
+            -1
+          ]
+        },
+        "m": "#a #a #a #a #a #a #a #a"
+      }
+    ]
+  },
+  seasaw: {
+    "let": {
+      "a": {
+        "p": [
+          "3*4,5*3"
+        ],
+        "m": "~ 10 8 5"
+      }
+    },
+    "duration": 14,
+    "instrument": "piano",
+    "scale": "Eb3 lydian",
+    "assign": {
+      "transpose": [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+        -1
+      ]
+    },
+    "p": "-7 -6 -5 -4 -5 -6 -7 -8",
+    "m": [
+      "#a",
+      "#a",
+      "#a",
+      "#a",
+      "#a",
+      "#a",
+      "#a",
+      "#a"
+    ]
+  },
   chords: {
     "instrument": "piano",
     "duration": 4,

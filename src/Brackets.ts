@@ -143,7 +143,7 @@ export class Brackets {
   }
 
   static toJson(string) {
-    const symbols = '\\w\\d#\\*\\.\\|\\~';
+    const symbols = '\\w\\d#\\*\\.\\|\\~\\-';
     const opening = '\\[';
     const closing = '\\]';
     const space = '\\s';
