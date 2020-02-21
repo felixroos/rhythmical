@@ -1359,7 +1359,7 @@ module.exports = {
   p: [{
     instrument: "synth",
     velocity: 0.5,
-    m: ["*3", "A5 . F5*2 C5 . D5*2 F5 . F5", "C5*2 F5 . F5*2 C6 . A5 . G5", "A5 . F5*2 C5 . D5*2 F5 . F5", "[[C5*2 F5] [Bb5 A5 G5] F5*2]", "A5 . F5*2 C5 . D5*2 F5 . F5", "C5*2 F5 . F5*2 C6 . A5 . G5", "A5 . F5*2 C5 . D5*2 F5 . F5", "[C5*2 F5] [Bb5 A5 G5] F5*2", "A5 . F5*2 C5 . A5 . F5", "Ab5 . F5*2 Ab5 . G5*2", "A5 . F5*2 C5 . A5 . F5", "Ab5 . F5*2 C5 . C6*2", "A5 . F5*2 C5 . D5*2 F5 . F5", "[C5*2 F5] [Bb5 A5 G5] F5*2"]
+    m: ["*3", "A5 . F5*2 C5 . D5*2 F5 . F5", "C5*2 F5 . F5*2 C6 . A5 . G5", "A5 . F5*2 C5 . D5*2 F5 . F5", "[C5*2 F5] [Bb5 A5 G5] F5*2", "A5 . F5*2 C5 . D5*2 F5 . F5", "C5*2 F5 . F5*2 C6 . A5 . G5", "A5 . F5*2 C5 . D5*2 F5 . F5", "[C5*2 F5] [Bb5 A5 G5] F5*2", "A5 . F5*2 C5 . A5 . F5", "Ab5 . F5*2 Ab5 . G5*2", "A5 . F5*2 C5 . A5 . F5", "Ab5 . F5*2 C5 . C6*2", "A5 . F5*2 C5 . D5*2 F5 . F5", "[C5*2 F5] [Bb5 A5 G5] F5*2"]
   }, {
     instrument: "synth",
     velocity: 1,
