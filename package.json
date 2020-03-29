@@ -6,7 +6,10 @@
   "scripts": {
     "test": "jest",
     "demo": "parcel demo/index.html --no-hmr",
-    "build": "parcel build demo/index.html --public-url /rhythmical/"
+    "build": "parcel build demo/index.html --public-url /rhythmical/",
+    "deploy": "sh deploy.sh",
+    "compile-grammar": "nearleyc src/parser/grammar.ne -o src/parser/grammar.js",
+    "test-grammar": "node src/parser/parser.js"
   },
   "repository": {
     "type": "git",
@@ -45,5 +48,8 @@
       "json",
       "node"
     ]
+  },
+  "dependencies": {
+    "nearley": "^2.19.1"
   }
 }
