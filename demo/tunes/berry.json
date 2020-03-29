@@ -1,0 +1,23 @@
+{
+  "let": {
+    "c": "1,5,8,11"
+  },
+  "instrument": "piano",
+  "duration": 16,
+  "scale": "C3 bebop major",
+  "p": [
+    {
+      "instrument": "harp",
+      "transpose": 12,
+      "m": "11 9 10 . 11 9 8 . 7*2 5 . 6 . 9 8 13 . 7 5 8 . 7*2 5 . 6*2 10"
+    }
+  ],
+  "m": [
+    {
+      "assign": {
+        "transpose": [4, 3, 4, 1, 2, 1, 0, -2, -1, -2, 0, 3, 4, 1, 0]
+      },
+      "m": "#c*2 #c #c*2 #c #c*2 #c #c*2 #c #c*2 #c #c*2 #c #c*2 #c #c*3"
+    }
+  ]
+}

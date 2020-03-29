@@ -1,0 +1,13 @@
+{
+  "instrument": "tidal",
+  "p": ["bd sd", "hh hh hh hh"],
+  "symbols": {
+    "m": [" | ", " . ", " "],
+    "p": [","],
+    "hierarchy": ["m", "p"],
+    "length": "_",
+    "duration": "/",
+    "rest": "~",
+    "trim": false
+  }
+}

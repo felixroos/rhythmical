@@ -1,10 +1,15 @@
 {
   "name": "rhythmical",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "parse and manipulate musical rhythms in javascript",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "demo": "parcel demo/index.html --no-hmr",
+    "build": "parcel build demo/index.html --public-url /rhythmical/",
+    "deploy": "sh deploy.sh",
+    "compile-grammar": "nearleyc src/parser/grammar.ne -o src/parser/grammar.js",
+    "test-grammar": "node src/parser/parser.js"
   },
   "repository": {
     "type": "git",
@@ -18,9 +23,16 @@
   "homepage": "https://github.com/felixroos/rhythmical#readme",
   "devDependencies": {
     "@types/jest": "^24.0.18",
+    "babel-jest": "^24.1.0",
+    "gh-pages": "^2.2.0",
     "jest": "^24.9.0",
-    "ts-jest": "^24.0.0",
-    "babel-jest": "^24.1.0"
+    "js-yaml": "^3.13.1",
+    "markdown-it": "^10.0.0",
+    "marked": "^0.8.0",
+    "parcel": "^1.12.4",
+    "tonal": "^2.2.2",
+    "tone": "^13.8.25",
+    "ts-jest": "^24.0.0"
   },
   "jest": {
     "transform": {
@@ -36,5 +48,8 @@
       "json",
       "node"
     ]
+  },
+  "dependencies": {
+    "nearley": "^2.19.1"
   }
 }

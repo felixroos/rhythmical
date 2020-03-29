@@ -1,25 +1,27 @@
 import { Fraction, Fractions } from './Fractions';
-
-export interface NestedRhythm<T> extends Array<T | NestedRhythm<T>> { }
+import { params } from './Music';
+export interface NestedRhythm<T> extends Array<T | NestedRhythm<T>> {}
 
 export type RhythmEvent<T> = {
   path: number[];
   divisions?: number[];
   value: T;
-}
+};
 
 export type RhythmBrick = {
   body: NestedRhythm<number>;
   offset?: number;
-}
+};
 
 export type EventPath = Fraction[];
 export type FlatEvent<T> = {
-  value: T,
-  path: EventPath,
-  length?: number
-}
-
+  value: T;
+  path: EventPath;
+  length?: number;
+  props?: Array<any>;
+  time?: number;
+  duration?: number;
+};
 
 export interface TimedEvent<T> extends FlatEvent<T> {
   time: number;
@@ -29,7 +31,6 @@ export interface TimedEvent<T> extends FlatEvent<T> {
 export type EventMapFn<T> = (event: FlatEvent<T>) => TimedEvent<T>;
 
 export class Rhythm {
-
   static from<T>(body: T | NestedRhythm<T>): NestedRhythm<T> {
     if (!Array.isArray(body)) {
       return [body];
@@ -38,12 +39,15 @@ export class Rhythm {
   }
 
   static duration(path: EventPath, whole = 1) {
-    return path.reduce((f, p) => f / p[1], whole);
+    return path.reduce((f, p) => (f / p[1]) * (p[2] || 1), whole);
   }
 
   static time(path: EventPath, whole = 1) {
     return path.reduce(
-      ({ f, t }, p, i) => ({ f: f / p[1], t: t + (f / p[1]) * path[i][0] }),
+      ({ f, t }, p, i) => ({
+        f: f / p[1]* (p[2] || 1),
+        t: t + (f / p[1]) * path[i][0] 
+      }),
       { f: whole, t: 0 }
     ).t;
   }
@@ -59,12 +63,7 @@ export class Rhythm {
     ).p;
   }
 
-
-  static addPaths(
-    a: number[],
-    b: number[],
-    divisions?: number[]
-  ) {
+  static addPaths(a: number[], b: number[], divisions?: number[]) {
     // console.warn('addPaths is deprecated');
     [a, b] = [a, b].sort((a, b) => b.length - a.length);
     const added = a.map((n, i) => n + (b[i] || 0));
@@ -89,19 +88,24 @@ export class Rhythm {
   }
 
   static calculate<T>(totalLength = 1): EventMapFn<T> {
-    return ({ path, value, length }) => {
+    return ({ time, duration, path, value, length }) => {
       if (typeof value === 'number') {
         length = value;
+      } else if (typeof value === 'object' && value['length']) {
+        length = value['length'];
       } else {
         length = 1;
       }
       return {
         value,
         path,
-        time: Rhythm.time(path, totalLength),
-        duration: Rhythm.duration(path, totalLength) * length
+        time: time !== undefined ? time : Rhythm.time(path, totalLength),
+        duration:
+          duration !== undefined
+            ? duration
+            : Rhythm.duration(path, totalLength) * length
       };
-    }
+    };
   }
 
   static useValueAsDuration(event: TimedEvent<number>): TimedEvent<number> {
@@ -118,60 +122,110 @@ export class Rhythm {
     };
   }
 
-  static render<T>(rhythm: NestedRhythm<T>, length = 1, useValueAsLength = false): TimedEvent<T>[] {
-    return Rhythm.flat(rhythm)
-      .map(Rhythm.calculate(length))
-      .filter(event => !!event.duration)
+  static poly<T>(
+    rhythms: (T | NestedRhythm<T>)[],
+    length = 1
+  ): TimedEvent<T>[] {
+    const toArray = (r: T | NestedRhythm<T>) => (!Array.isArray(r) ? [r] : r);
+    return rhythms.reduce(
+      (events: TimedEvent<T>[], rhythm): TimedEvent<T>[] =>
+        events.concat(Rhythm.render(toArray(rhythm), length, true)),
+      []
+    );
   }
 
+  static render<T>(
+    rhythm: NestedRhythm<T>,
+    length = 1,
+    poly = false
+  ): TimedEvent<T>[] {
+    return Rhythm.flat(rhythm, [], poly)
+      .map(Rhythm.calculate(length))
+      .filter(event => !!event.duration);
+  }
 
   static spm(bpm, pulse) {
-    return 60 / bpm * pulse;
+    return (60 / bpm) * pulse;
   }
 
-
-  /** Flattens the given possibly nested tree array to an array containing all values in sequential order. 
+  /** Flattens the given possibly nested tree array to an array containing all values in sequential order.
    * You can then turn RhythmEvent[] back to the original nested array with Measure.expand. */
-  static flatten<T>(tree: NestedRhythm<T>, path: number[] = [], divisions: number[] = []): RhythmEvent<T>[] {
-    if (!Array.isArray(tree)) { // is primitive value
-      return [{
-        path,
-        divisions,
-        value: tree
-      }];
+  static flatten<T>(
+    tree: NestedRhythm<T>,
+    path: number[] = [],
+    divisions: number[] = []
+  ): RhythmEvent<T>[] {
+    if (!Array.isArray(tree)) {
+      // is primitive value
+      return [
+        {
+          path,
+          divisions,
+          value: tree
+        }
+      ];
     }
     return tree.reduce(
-      (flat: RhythmEvent<T>[], item: NestedRhythm<T>, index: number): RhythmEvent<T>[] =>
+      (
+        flat: RhythmEvent<T>[],
+        item: NestedRhythm<T>,
+        index: number
+      ): RhythmEvent<T>[] =>
         flat.concat(
-          Rhythm.flatten(item, path.concat([index]), divisions.concat([tree.length]))
-        ), []);
+          Rhythm.flatten(
+            item,
+            path.concat([index]),
+            divisions.concat([tree.length])
+          )
+        ),
+      []
+    );
   }
 
   static isValid<T>(items: RhythmEvent<T>[]) {
     return items.reduce((valid, item) => {
-      return valid &&
-        item.divisions && item.path &&
+      return (
+        valid &&
+        item.divisions &&
+        item.path &&
         item.divisions.length === item.path.length
+      );
     }, true);
   }
 
   static nest<T>(items: RhythmEvent<T>[], fill: any = 0): NestedRhythm<T> {
     return items.reduce((nested, item) => {
       if (item.path[0] >= item.divisions[0]) {
-        console.error(`invalid path ${item.path[0]} in divisions ${item.divisions[0]} on item`, item);
+        console.error(
+          `invalid path ${item.path[0]} in divisions ${item.divisions[0]} on item`,
+          item
+        );
         return nested;
       }
       if (item.path.length !== item.divisions.length) {
-        console.error('invalid flat rhythm: different length of path / divisions', item);
+        console.error(
+          'invalid flat rhythm: different length of path / divisions',
+          item
+        );
         return nested;
       }
       if (nested.length && nested.length < item.divisions[0]) {
-        console.error('ivalid flat rhythm: different divisions on same level > concat', items, nested);
-        nested = nested.concat(Array(item.divisions[0] - nested.length).fill(fill));
+        console.error(
+          'ivalid flat rhythm: different divisions on same level > concat',
+          items,
+          nested
+        );
+        nested = nested.concat(
+          Array(item.divisions[0] - nested.length).fill(fill)
+        );
         /* return nested; */
       }
       if (nested.length && nested.length > item.divisions[0]) {
-        console.warn('flat rhythm: different divisions on same level', items, nested);
+        console.warn(
+          'flat rhythm: different divisions on same level',
+          items,
+          nested
+        );
       }
       if (!nested.length && item.divisions[0]) {
         nested = new Array(item.divisions[0]).fill(fill);
@@ -192,13 +246,16 @@ export class Rhythm {
         nested[item.path[0]] = Rhythm.nest(
           items
             .filter(i => i.path.length > 1 && i.path[0] === item.path[0])
-            .map(i => ({ ...i, path: i.path.slice(1), divisions: i.divisions.slice(1) })),
+            .map(i => ({
+              ...i,
+              path: i.path.slice(1),
+              divisions: i.divisions.slice(1)
+            })),
           fill
-        )
+        );
       }
       return nested;
-    }, [])
-
+    }, []);
   }
   /** Turns a flat FlatEvent array to a (possibly) nested Array of its values. Reverts Measure.flatten. */
   static expand<T>(items: RhythmEvent<T>[]): NestedRhythm<T> {
@@ -212,7 +269,7 @@ export class Rhythm {
         const siblings = items
           .filter((i, j) => j >= index && i.path.length >= item.path.length)
           .map(i => ({ ...i, path: i.path.slice(1) }));
-        expanded[item.path[0]] = Rhythm.expand(siblings)
+        expanded[item.path[0]] = Rhythm.expand(siblings);
       }
       return expanded;
     }, []);
@@ -235,20 +292,26 @@ export class Rhythm {
   }
 
   static haveSameSlot(a: RhythmEvent<any>, b: RhythmEvent<any>) {
-    return Rhythm.simplePath(a.path) === Rhythm.simplePath(b.path) &&
+    return (
+      Rhythm.simplePath(a.path) === Rhythm.simplePath(b.path) &&
       Rhythm.simplePath(a.divisions) === Rhythm.simplePath(b.divisions)
+    );
     //a.divisions.length === b.divisions.length
   }
 
-
-  static getPath<T>(tree, path, withPath = false, flat?: RhythmEvent<T>[]): any | RhythmEvent<T> {
+  static getPath<T>(
+    tree,
+    path,
+    withPath = false,
+    flat?: RhythmEvent<T>[]
+  ): any | RhythmEvent<T> {
     if (typeof path === 'number') {
       path = [path];
     }
     flat = flat || Rhythm.flatten(tree);
     const match = flat.find(v => {
       const min = Math.min(path.length, v.path.length);
-      return v.path.slice(0, min).join(',') === path.slice(0, min).join(',')
+      return v.path.slice(0, min).join(',') === path.slice(0, min).join(',');
     });
     if (withPath) {
       return match;
@@ -256,18 +319,25 @@ export class Rhythm {
     return match ? match.value : undefined;
   }
 
-  static addPulse<T>(rhythm: NestedRhythm<T>, pulse: number, offset: number = 0): NestedRhythm<T> {
+  static addPulse<T>(
+    rhythm: NestedRhythm<T>,
+    pulse: number,
+    offset: number = 0
+  ): NestedRhythm<T> {
     const measures = Math.ceil(rhythm.length / pulse);
     return Rhythm.nest(
       Rhythm.flatten(rhythm).map(({ value, divisions, path }) => {
         divisions = [measures].concat([pulse], divisions.slice(1));
-        path = [Math.floor(path[0] / pulse)].concat([path[0] % pulse], path.slice(1));
+        path = [Math.floor(path[0] / pulse)].concat(
+          [path[0] % pulse],
+          path.slice(1)
+        );
         path = offset ? Rhythm.addPaths(path, [0, offset], divisions) : path;
         return {
           value,
           divisions,
           path
-        }
+        };
       })
     );
   }
@@ -300,7 +370,13 @@ export class Rhythm {
     );
   }
 
-  static nextItem<T>(tree, path, move = 1, withPath = false, flat?: RhythmEvent<T>[]): any | RhythmEvent<T> {
+  static nextItem<T>(
+    tree,
+    path,
+    move = 1,
+    withPath = false,
+    flat?: RhythmEvent<T>[]
+  ): any | RhythmEvent<T> {
     flat = Rhythm.flatten(tree);
     const match = Rhythm.getPath(tree, path, true, flat);
     if (match) {
@@ -316,7 +392,7 @@ export class Rhythm {
     const flat = Rhythm.flatten(tree);
     const match = flat.find(v => v.value === value);
     if (match) {
-      return Rhythm.nextItem(tree, match.path, move, false, flat)
+      return Rhythm.nextItem(tree, match.path, move, false, flat);
     }
   }
 
@@ -337,12 +413,18 @@ export class Rhythm {
       4: [4], // or any other 4 block
       2: position === 0 ? [2, 0] : [0, 2] // or any other 2 block
       /** ... */
-    }
-    Array(position).fill(0).concat(blocks[length]).concat(Array(pulse - position - length).fill(0));
+    };
+    Array(position)
+      .fill(0)
+      .concat(blocks[length])
+      .concat(Array(pulse - position - length).fill(0));
     return blocks[length];
   }
 
-  addGroove(items: string[], pulse = 4): { [item: string]: NestedRhythm<number> } {
+  addGroove(
+    items: string[],
+    pulse = 4
+  ): { [item: string]: NestedRhythm<number> } {
     const chordsPerBeat = pulse / items.length;
     if (chordsPerBeat < 0) {
       // need another grid... or just error??
@@ -352,65 +434,73 @@ export class Rhythm {
     }
     const rendered = Rhythm.render(items, pulse);
     let time = 0;
-    return rendered.reduce((combined, chordEvent: TimedEvent<string>, index) => {
-      // const time = rendered.slice(0, index + 1).reduce((sum, track) => sum + track.duration, 0);
-      combined = {
-        ...combined,
-        [chordEvent.value]: Rhythm.getBlock(chordEvent.duration, time),
-      }
-      time += chordEvent.duration;
-      return combined;
-    }, {});
+    return rendered.reduce(
+      (combined, chordEvent: TimedEvent<string>, index) => {
+        // const time = rendered.slice(0, index + 1).reduce((sum, track) => sum + track.duration, 0);
+        combined = {
+          ...combined,
+          [chordEvent.value]: Rhythm.getBlock(chordEvent.duration, time)
+        };
+        time += chordEvent.duration;
+        return combined;
+      },
+      {}
+    );
   }
-
 
   /**
    * NEW SYNTAX
    */
 
-
-
   static multiplyDivisions(divisions: number[], factor: number): number[] {
     return [divisions[0] * factor].concat(divisions.slice(1));
   }
 
-  static multiplyPath(path: number[], divisions: number[], factor: number): number[] {
+  static multiplyPath(
+    path: number[],
+    divisions: number[],
+    factor: number
+  ): number[] {
     path = path.map(v => factor * v);
     return Rhythm.overflow(path, divisions);
   }
 
-  static multiplyEvents(rhythm: FlatEvent<number>[], factor: number): FlatEvent<number>[] {
-    return Rhythm.fixTopLevel(rhythm
-      .map(({ value, path }) => ({
+  static multiplyEvents(
+    rhythm: FlatEvent<number>[],
+    factor: number
+  ): FlatEvent<number>[] {
+    return Rhythm.fixTopLevel(
+      rhythm.map(({ value, path }) => ({
         value: value * factor,
-        path:
-          Rhythm.carry(
-            path.map((f, i) => [
-              f[0] * factor,
-              f[1] * (!i ? factor : 1)
-              // f[1] * factor
-              // f[1]
-            ])
-          )
-      })));
+        path: Rhythm.carry(
+          path.map((f, i) => [
+            f[0] * factor,
+            f[1] * (!i ? factor : 1)
+            // f[1] * factor
+            // f[1]
+          ])
+        )
+      }))
+    );
   }
 
-  static divideEvents(rhythm: FlatEvent<number>[], factor: number): FlatEvent<number>[] {
+  static divideEvents(
+    rhythm: FlatEvent<number>[],
+    factor: number
+  ): FlatEvent<number>[] {
     return Rhythm.multiplyEvents(rhythm, 1 / factor);
   }
 
-  static multiply(rhythm: NestedRhythm<number>, factor: number): NestedRhythm<number> {
-    return Rhythm.nested(
-      Rhythm.multiplyEvents(
-        Rhythm.flat(rhythm), factor
-      )
-    );
+  static multiply(
+    rhythm: NestedRhythm<number>,
+    factor: number
+  ): NestedRhythm<number> {
+    return Rhythm.nested(Rhythm.multiplyEvents(Rhythm.flat(rhythm), factor));
   }
 
   static divide(rhythm: NestedRhythm<number>, divisor: number) {
     return Rhythm.multiply(rhythm, 1 / divisor);
   }
-
 
   static maxArray(array) {
     if (!array || !array.length) {
@@ -419,21 +509,92 @@ export class Rhythm {
     return array.reduce((max, item) => Math.max(max, item), array[0]);
   }
 
-  /** Flattens the given possibly nested tree array to an array containing all values in sequential order. 
+  /* static countChildren(item, poly = false) {
+    if (item[params.monophony]) {
+      return item[params.monophony].length * item['duration'][0] + 1;
+    }
+    return sum + item['duration'][0];
+  } */
+
+  /** Flattens the given possibly nested tree array to an array containing all values in sequential order.
    * You can then turn RhythmEvent[] back to the original nested array with Measure.expand. */
-  static flat<T>(rhythm: NestedRhythm<T>, path: EventPath = []): Array<FlatEvent<T>> {
+  static flat<T>(
+    rhythm: NestedRhythm<T>,
+    path: EventPath = [],
+    poly = false,
+    props = []
+  ): Array<FlatEvent<T>> {
+    // get total duration of rhythm
+    let duration;
+    if (!poly) {
+      duration = rhythm.reduce((sum, item) => {
+        if (Array.isArray(item) || typeof item !== 'object') {
+          return sum + 1;
+        }
+        if (Array.isArray(item['duration'])) {
+          if (item[params.monophony]) {
+            item['duration'] =
+              item[params.monophony].length * item['duration'][0];
+            //return sum + item['duration'];
+          } else if (item[params.polyphony]) {
+            item['duration'] = item['duration'][0]; // poly
+          } else {
+            item['duration'] = item['duration'][0]; // poly
+          }
+        }
+        return sum + (item['duration'] !== undefined ? item['duration'] : 1);
+      }, 0);
+    } else {
+      duration = 1;
+    }
+    let time = 0;
     return rhythm.reduce(
-      (flat: Array<FlatEvent<T>>, item: NestedRhythm<T> | T, index: number): Array<FlatEvent<T>> => {
+      (
+        flat: Array<FlatEvent<T>>,
+        item: NestedRhythm<T> | T,
+        index: number
+      ): Array<FlatEvent<T>> => {
+        const i = time + (item['time'] || 0);
+        if (!poly) {
+          time += typeof item === 'object' ? +(item['duration'] || 1) : 1;
+        }
+        if (typeof item === 'object') {
+          const collectedKeys = ['voice', 'duration'];
+          Object.keys(item)
+            .filter(key => collectedKeys.includes(key))
+            .forEach(key => {
+              props[key] = [item[key]].concat(props[key] || []);
+            });
+        } else {
+          props = Object.keys(props).reduce(
+            (p, key) => ({
+              ...p,
+              [key]: [null].concat(props[key])
+            }),
+            props
+          );
+        }
         if (!Array.isArray(item)) {
-          return flat.concat([{
-            value: item,
-            path: path.concat([[index, rhythm.length]]),
-          }])
+          if (props['duration'] && Array.isArray(props['duration'][0])) {
+            item['duration'] = props['duration'][0][0] || 1;
+            /* console.log(`item duration ${newDuration}/${duration}`, item); */
+          }
+          return flat.concat([
+            {
+              value: item,
+              path: path.concat([[i, duration, item['duration'] || 1]]),
+              /* props */
+              /* path: path.concat([[index, rhythm.length]]), */
+            }
+          ]);
         }
         return flat.concat(
-          Rhythm.flat(item, path.concat([[index, rhythm.length]]))
-        )
-      }, []);
+          Rhythm.flat(item, path.concat([[i, duration]]), poly, props)
+          /* Rhythm.flat(item, path.concat([[index, rhythm.length]])) */
+        );
+      },
+      []
+    );
   }
 
   static nested<T>(items: FlatEvent<T>[], fill: any = 0): NestedRhythm<T> {
@@ -443,12 +604,22 @@ export class Rhythm {
         return nested;
       }
       if (nested.length && nested.length < item.path[0][1]) {
-        console.warn('ivalid flat rhythm: different divisions on same level > concat', items, nested);
-        nested = nested.concat(Array(item.path[0][1] - nested.length).fill(fill));
+        console.warn(
+          'ivalid flat rhythm: different divisions on same level > concat',
+          items,
+          nested
+        );
+        nested = nested.concat(
+          Array(item.path[0][1] - nested.length).fill(fill)
+        );
         /* return nested; */
       }
       if (nested.length && nested.length > item.path[0][1]) {
-        console.warn('flat rhythm: different divisions on same level', items, nested);
+        console.warn(
+          'flat rhythm: different divisions on same level',
+          items,
+          nested
+        );
       }
       if (!nested.length && item.path[0][1]) {
         nested = new Array(item.path[0][1]).fill(fill);
@@ -457,7 +628,10 @@ export class Rhythm {
         if (Math.round(item.path[0][0]) === item.path[0][0]) {
           nested[item.path[0][0]] = item.value;
         } else if (item.value !== fill) {
-          console.warn('fractured path! value "' + item.value + '" !== "' + fill + '"', item)
+          console.warn(
+            'fractured path! value "' + item.value + '" !== "' + fill + '"',
+            item
+          );
         }
       } else {
         nested[item.path[0][0]] = Rhythm.nested(
@@ -465,23 +639,17 @@ export class Rhythm {
             .filter(i => i.path.length > 1 && i.path[0][0] === item.path[0][0])
             .map(i => ({ ...i, path: i.path.slice(1) })),
           fill
-        )
+        );
       }
       return nested;
-    }, [])
-
+    }, []);
   }
-
 
   // aligns all paths to longest path length, filling each up with [0, 1]
   static align(...paths: EventPath[]): EventPath[] {
-    return paths.map(p => p
-      .concat(
-        Array(
-          Rhythm.maxArray(
-            paths.map(p => p.length)
-          ) - p.length
-        ).fill([0, 1])
+    return paths.map(p =>
+      p.concat(
+        Array(Rhythm.maxArray(paths.map(p => p.length)) - p.length).fill([0, 1])
       )
     );
   }
@@ -498,9 +666,7 @@ export class Rhythm {
 
   static add(a: EventPath, b: EventPath, cancel = false): EventPath {
     [a, b] = Rhythm.align(a, b);
-    return Rhythm.carry(
-      a.map((f, i) => Fractions.add(f, b[i], cancel))
-    );
+    return Rhythm.carry(a.map((f, i) => Fractions.add(f, b[i], cancel)));
   }
 
   static fixTopLevel<T>(events: FlatEvent<T>[]): FlatEvent<T>[] {
@@ -509,12 +675,15 @@ export class Rhythm {
     // use max divisor for all top levels
     return events.map(e => ({
       ...e,
-      path: e.path.map((f, i) => !i ? [f[0], max] : f),
+      path: e.path.map((f, i) => (!i ? [f[0], max] : f))
     }));
   }
 
   /* Makes sure the top level is correct on all events + adds optional path to move the events */
-  static shiftEvents<T>(events: FlatEvent<T>[], path?: EventPath): FlatEvent<T>[] {
+  static shiftEvents<T>(
+    events: FlatEvent<T>[],
+    path?: EventPath
+  ): FlatEvent<T>[] {
     if (path) {
       events = events.map(e => ({ ...e, path: Rhythm.add(e.path, path) }));
     }
@@ -525,62 +694,77 @@ export class Rhythm {
     return Rhythm.nested(Rhythm.shiftEvents(Rhythm.flat(rhythm), path));
   }
 
-  static groupEvents<T>(events: FlatEvent<T>[], pulse, offset?: number): FlatEvent<T>[] {
-    let wrapped =
-      events.map(({ value, path }) => {
-        path = [].concat(
-          [[Math.floor(path[0][0] / pulse), Math.ceil(path[0][1] / pulse)]],
-          [[path[0][0] % pulse, pulse]],
-          path.slice(1)
-        );
-        return {
-          value,
-          path
-        }
-      });
+  static groupEvents<T>(
+    events: FlatEvent<T>[],
+    pulse,
+    offset?: number
+  ): FlatEvent<T>[] {
+    let wrapped = events.map(({ value, path }) => {
+      path = [].concat(
+        [[Math.floor(path[0][0] / pulse), Math.ceil(path[0][1] / pulse)]],
+        [[path[0][0] % pulse, pulse]],
+        path.slice(1)
+      );
+      return {
+        value,
+        path
+      };
+    });
     if (offset) {
-      wrapped = Rhythm.shiftEvents(wrapped, [[0, 1], [offset, pulse]]);
+      wrapped = Rhythm.shiftEvents(wrapped, [
+        [0, 1],
+        [offset, pulse]
+      ]);
     }
     return wrapped;
   }
 
-  static group<T>(rhythm: NestedRhythm<T>, pulse: number, offset?: number): NestedRhythm<T> {
-    return Rhythm.nested(Rhythm.groupEvents(Rhythm.flat(rhythm), pulse, offset));
+  static group<T>(
+    rhythm: NestedRhythm<T>,
+    pulse: number,
+    offset?: number
+  ): NestedRhythm<T> {
+    return Rhythm.nested(
+      Rhythm.groupEvents(Rhythm.flat(rhythm), pulse, offset)
+    );
   }
 
   static ungroupEvents<T>(events: FlatEvent<T>[]): FlatEvent<T>[] {
     return events.map(({ value, path }) => ({
       value,
       path: [
-        [
-          path[0][0] * path[1][1] + path[1][0],
-          path[1][1] * path[0][1]
-        ]
-      ]
-        .concat(path.slice(2)),
+        [path[0][0] * path[1][1] + path[1][0], path[1][1] * path[0][1]]
+      ].concat(path.slice(2))
     }));
   }
-
 
   static ungroup<T>(rhythm: NestedRhythm<T>) {
     return Rhythm.nested(Rhythm.ungroupEvents(Rhythm.flat(rhythm)));
   }
 
-  static combine<T>(source: NestedRhythm<T>, target: NestedRhythm<T>): NestedRhythm<T> {
+  static combine<T>(
+    source: NestedRhythm<T>,
+    target: NestedRhythm<T>
+  ): NestedRhythm<T> {
     let targetEvents = Rhythm.flat(target);
     let sourceEvents = Rhythm.flat(source);
     if (source.length > target.length) {
-      targetEvents = Rhythm.shiftEvents(Rhythm.flat(target), [[0, source.length]]); // add empty bars
+      targetEvents = Rhythm.shiftEvents(Rhythm.flat(target), [
+        [0, source.length]
+      ]); // add empty bars
     } else if (target.length > source.length) {
-      sourceEvents = Rhythm.shiftEvents(Rhythm.flat(source), [[0, target.length]]); // add empty bars
+      sourceEvents = Rhythm.shiftEvents(Rhythm.flat(source), [
+        [0, target.length]
+      ]); // add empty bars
     }
     return Rhythm.nested(Rhythm.combineEvents(targetEvents, sourceEvents));
   }
 
-  static combineEvents<T>(a: FlatEvent<T>[], b: FlatEvent<T>[]): FlatEvent<T>[] {
-    return Rhythm.shiftEvents(
-      [].concat(a, b).filter(e => !!e.value)
-    );
+  static combineEvents<T>(
+    a: FlatEvent<T>[],
+    b: FlatEvent<T>[]
+  ): FlatEvent<T>[] {
+    return Rhythm.shiftEvents([].concat(a, b).filter(e => !!e.value));
   }
 
   static isEqualPath(a: EventPath, b: EventPath) {
@@ -588,20 +772,28 @@ export class Rhythm {
     return paths[0] === paths[1];
   }
 
-  static insertEvents<T>(sourceEvents: FlatEvent<T>[], targetEvents: FlatEvent<T>[], beat?: number) {
-    const pulses = targetEvents.map(e => e.path[1] ? e.path[1][1] : 1);
+  static insertEvents<T>(
+    sourceEvents: FlatEvent<T>[],
+    targetEvents: FlatEvent<T>[],
+    beat?: number
+  ) {
+    const pulses = targetEvents.map(e => (e.path[1] ? e.path[1][1] : 1));
     const beats = targetEvents[0].path[0][1] * pulses[0];
     if (beat === undefined) {
       beat = beats; // set to end if undefined
     } else if (beat < 0) {
-      beat = beats + beat // subtract from end
+      beat = beats + beat; // subtract from end
     }
     // handle negative offset
     sourceEvents = Rhythm.groupEvents(sourceEvents, pulses[0], beat);
     return Rhythm.combineEvents(targetEvents, sourceEvents);
   }
 
-  static insert<T>(source: NestedRhythm<T>, target: NestedRhythm<T>, beat?: number) {
+  static insert<T>(
+    source: NestedRhythm<T>,
+    target: NestedRhythm<T>,
+    beat?: number
+  ) {
     return Rhythm.nested(
       Rhythm.insertEvents(Rhythm.flat(source), Rhythm.flat(target), beat)
     );
@@ -611,7 +803,6 @@ export class Rhythm {
     return divisions.map((d, index) => [path ? path[index] : 0, d]);
   }
 }
-
 
 /*
 

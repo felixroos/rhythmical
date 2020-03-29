@@ -1,0 +1,37 @@
+{
+  "duration": 3,
+  "p": [
+    {
+      "velocity": 0.7,
+      "instrument": "synth",
+      "m": "C3*3 . C3_.5 C3_.5 | F2_.5 F2_.5 . F2"
+    },
+    {
+      "velocity": 0.9,
+      "instrument": "harp",
+      "m": "~ G3,Eb4 ~ Bb3,Eb4 . ~ Ab3,Eb4 ~ Eb4,Bb3"
+    },
+    {
+      "velocity": 0.7,
+      "instrument": "synth",
+      "m": "G4 Ab4"
+    },
+    {
+      "instrument": "drums",
+      "p": [
+        "bd | bd bd ~ ~ . ~",
+        "~ hh ~ hh | ~ hh . ~ ~ hh hh",
+        "~ ~ sd ~ | ~ ~ sd ~"
+      ]
+    }
+  ],
+  "symbols": {
+    "m": [" | ", " . ", " "],
+    "p": [","],
+    "hierarchy": ["m", "p"],
+    "length": "_",
+    "duration": "*",
+    "rest": "~",
+    "trim": false
+  }
+}

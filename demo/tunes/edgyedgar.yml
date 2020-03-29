@@ -1,0 +1,7 @@
+instrument: "piano"
+"duration": 32
+"chords":
+  - ["D6", "G7", "EbM7", "Eb7#11"]
+  - ["D7", "G7", "F#M7", "F7b9"]
+  - ["Cm7", "F7", "B7sus", "E7"]
+  - [["Em7", "A7b9"], ["DM7", "B7#11"], ["Em7", "A7b9"], "DM7"]

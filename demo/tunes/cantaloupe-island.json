@@ -1,0 +1,170 @@
+{
+  "name": "Cataloupe Island",
+  "duration": 32,
+  "p": [
+    {
+      "name": "melody",
+      "instrument": "synth",
+      "duration": [1],
+      "m": [
+        "",
+        "",
+        "",
+        "///F4 F4",
+        "||Ab4/Bb4 |Bb4_2.5",
+        "|/Ab4 |Bb4/C5 |Eb4/F4",
+        "",
+        "///F4 F4",
+        "||Ab4/Bb4 |Bb4_2.5",
+        "|/Ab4 |Bb4/Cb5 |Eb4/F4",
+        "",
+        ["", ["C5/Eb5 |C5/Eb5 "]],
+        [["F4 / F4_6"], ""],
+        ["", ["C5/Eb5 |C5/Eb5 "]],
+        [["F4 / F4_6"], ""],
+        "///F5 F5"
+      ]
+    },
+    {
+      "name": "bass",
+      "instrument": "harp",
+      "duration": [1],
+      "m": [
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "F2_1.5/ C3_3//Eb3 F3",
+        "Db2_1.5/ Ab2_3//B2 Db3",
+        "Db2_1.5/ Ab2_3//B2 Db3",
+        "Db2_1.5/ Ab2_3//B2 Db3",
+        "Db2_1.5/ Ab2_3//B2 Db3",
+        [
+          "F2,C3,D3 ",
+          [
+            "",
+            {
+              "m": ["F2,C3,D3"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "F2,C3,D3 ",
+          [
+            "",
+            {
+              "m": ["F2,C3,D3"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "F2,C3,D3 ",
+          [
+            "",
+            {
+              "m": ["F2,C3,D3"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "F2,C3,D3 ",
+          [
+            "",
+            {
+              "m": ["F2,C3,D3"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "chords",
+      "instrument": "piano",
+      "duration": [1],
+      "m": [
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,C4/Bb3,D4 /C4,Eb4/Bb3,D4 Ab3,C4",
+        " Ab3,B3/Bb3,Db4 /B3,Eb4/Bb3,Db4 Ab3,B3",
+        " Ab3,B3/Bb3,Db4 /B3,Eb4/Bb3,Db4 Ab3,B3",
+        " Ab3,B3/Bb3,Db4 /B3,Eb4/Bb3,Db4 Ab3,B3",
+        " Ab3,B3/Bb3,Db4 |",
+        [
+          "G3,C4,D4 ",
+          [
+            "",
+            {
+              "m": ["G3,C4,D4"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "G3,C4,D4 ",
+          [
+            "",
+            {
+              "m": ["G3,C4,D4"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "G3,C4,D4 ",
+          [
+            "",
+            {
+              "m": ["G3,C4,D4"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ],
+        [
+          "G3,C4,D4 ",
+          [
+            "",
+            {
+              "m": ["G3,C4,D4"],
+              "length": 3
+            }
+          ],
+          "",
+          ""
+        ]
+      ]
+    }
+  ],
+  "symbols": {
+    "m": ["|", "/", " "],
+    "p": [","],
+    "hierarchy": ["m", "p"],
+    "length": "_",
+    "duration": "*"
+  }
+}
