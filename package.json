@@ -1,6 +1,6 @@
 {
   "name": "rhythmical",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "parse and manipulate musical rhythms in javascript",
   "main": "index.js",
   "scripts": {
