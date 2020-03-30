@@ -8,6 +8,9 @@ nearly stuff
 
 new links found:
 
+- https://github.com/tatecarson/LSU-PDM-Spring-2018 more algomusic stuff
+  - https://junshern.github.io/algorithmic-music-tutorial/ (has markov music tutorial)
+
 - tidalcycles related: https://tidalcycles.org/index.php/Friends_and_relations
 
 - https://github.com/Mdashdotdashn/krill !!
