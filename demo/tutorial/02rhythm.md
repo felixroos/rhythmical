@@ -63,6 +63,7 @@ We need to go deeper. Let's play the famous bolero Rhythm
 <!-- <button id="example-boleroFeet">Show Example with 1lvl feet</button>
 <button id="example-boleroFeet2">Show Example with 2lvl feet</button> -->
 <!-- TBD FIX! -->
+<!-- TBD Instruments! -->
 
 Now we have Arrays that go up to four levels deep. The levels are
 
