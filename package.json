@@ -2,7 +2,7 @@
   "name": "rhythmical",
   "version": "0.1.4",
   "description": "parse and manipulate musical rhythms in javascript",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest",
     "demo": "parcel demo/index.html --no-hmr",
