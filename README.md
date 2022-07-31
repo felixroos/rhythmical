@@ -6,6 +6,8 @@ This lib is able to parse and manipulate musical rhythms by using nested arrays 
 
 This lib is a work in progress.
 
+DEMO: https://felixroos.github.io/rhythmical/
+
 ## Example Showcase
 
 Here are some example usages of the lib, to get you hooked.
