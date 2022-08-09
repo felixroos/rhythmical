@@ -1,3 +1,9 @@
+# This lib has been archived!
+
+... as I am now developing [strudel](https://github.com/tidalcycles/strudel) for the same purpose!
+
+----
+
 # rhythmical
 
 This lib is able to parse and manipulate musical rhythms by using nested arrays and algebraic fractions.
